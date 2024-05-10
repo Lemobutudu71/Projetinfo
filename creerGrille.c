@@ -1,7 +1,11 @@
 #include "creerGrille.h"
 
- #define MUR_VERTICAL '|'
- #define MUR_HORIZONTAL '-'
+#define MUR_VERTICAL '|'
+#define MUR_HORIZONTAL '-'
+#define MIN 15
+#define MAX 20
+#define NB_CIBLES 18
+#define NB_ROBOTS 4
 
 
 
@@ -12,8 +16,8 @@ Grille *creerGrille() {
         exit(1);
     }
 
-    grille->largeur = 15 + rand() % (20 - 15 + 1);
-    grille->hauteur = 15 + rand() % (20 - 15 + 1);
+    grille->largeur = MIN + rand() % (MAX - MIN + 1);
+    grille->hauteur = MIN + rand() % (MAX - MIN + 1);
 
     grille->cases = malloc(grille->hauteur * sizeof(char *));
     if (grille->cases == NULL) {
@@ -36,14 +40,6 @@ Grille *creerGrille() {
 }
 
 
-void afficherGrille(Grille *grille) {
-    for (int i = 0; i < grille->hauteur; i++) {
-        for (int j = 0; j < grille->largeur; j++) {
-            printf("%c ", grille->cases[i][j]);
-        }
-        printf("\n");
-    }
-}
 
 void placerMursBords(Grille *grille) {
     for (int i = 0; i < grille->largeur; i++) {
@@ -56,6 +52,61 @@ void placerMursBords(Grille *grille) {
     }
 }
 
+void placerCibles(Grille *grille) {
+    int placer = 0;//compte le nombre de cible placer correctement 
+    while (placer < NB_CIBLES) {//boucle continue tant que les 18 cibles ne sont pas placées 
+        int x = 1 + rand() % (grille->largeur - 2);// selectionne coordonnés x et y pour placer la cible de façon aléatoires en evitant les bordures (+1)
+        int y = 1 + rand() % (grille->hauteur - 2);
+
+        // vérification qu'il n'y a pas de cibles à coté 
+        int valide = 1;
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (grille->cases[y + dy][x + dx] != ' ') {
+                    valide = 0;// case non valide 
+                    break;
+                }
+            }
+            if (!valide) break;
+        }
+
+        if (valide) {
+            grille->cases[y][x] = 'A' + (placer); // cible placée sur la grille numérotées
+            placer++;
+
+            // place deux murs qui forment un angle droit autour de la cible de façon aléatoire
+            if (rand() % 2) {
+                grille->cases[y + 1][x] = MUR_VERTICAL;
+                grille->cases[y][x + 1] = MUR_HORIZONTAL;
+            } else {
+                grille->cases[y - 1][x] = MUR_VERTICAL;
+                grille->cases[y][x - 1] = MUR_HORIZONTAL;
+            }
+        }
+    }
+}
+
+void placerRobots(Grille *grille) {
+    int placed = 0;
+    while (placed < NB_ROBOTS) {
+        int x = rand() % grille->largeur;
+        int y = rand() % grille->hauteur;
+
+        if (grille->cases[y][x] == ' ') {
+            grille->cases[y][x] = 'R'; // R for robot
+            placed++;
+        }
+    }
+}
+
+void afficherGrille(Grille *grille) {
+    for (int i = 0; i < grille->hauteur; i++) {
+        for (int j = 0; j < grille->largeur; j++) {
+            printf("%c ", grille->cases[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 
 void freeGrille(Grille grille){ // libère le mémoire 
