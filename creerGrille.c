@@ -51,6 +51,34 @@ void placerMursBords(Grille *grille) {
         grille->cases[j][grille->largeur - 1] = MUR_VERTICAL; // Mur vertical droit
     }
 }
+void placerMursPerpendiculaires(Grille *grille) { // A modifié affiche pas
+    // Pour chaque côté de la grille, place deux murs perpendiculaires de manière aléatoire
+
+    // Bord supérieur
+    int x1 = 1 + rand() % (grille->largeur - 3); // Coordonnée x aléatoire pour le premier mur
+    int x2 =  2 + rand() % (grille->largeur - 3); // Coordonnée x aléatoire pour le deuxième mur, 
+    grille->cases[0][x1] = MUR_VERTICAL;
+    grille->cases[0][x2] = MUR_VERTICAL;
+
+    // Bord droit
+    int y1 = 1 + rand() % (grille->hauteur - 3); // Coordonnée y aléatoire pour le premier mur
+    int y2 = 2 + rand() % (grille->hauteur - 3) ; // Coordonnée y  aléatoire pour le deuxième mur
+    grille->cases[y1][grille->largeur - 2] = MUR_HORIZONTAL;
+    grille->cases[y2][grille->largeur - 2] = MUR_HORIZONTAL;
+
+    // Bord inférieur
+    x1 = 1 + rand() % (grille->largeur - 3); // Coordonnée x aléatoire pour le premier mur
+    x2 = 2 + rand() % (grille->largeur - 3); // Coordonnée x aléatoire pour le deuxième mur, 
+    grille->cases[grille->hauteur - 2][x1] = MUR_VERTICAL;
+    grille->cases[grille->hauteur - 2][x2] = MUR_VERTICAL;
+
+    // Bord gauche
+    y1 = 1 + rand() % (grille->hauteur - 3); // Coordonnée y aléatoire pour le premier mur
+    y2 = 2 + rand() % (grille->hauteur - 3); // Coordonnée y aléatoire pour le deuxième mur, 
+    grille->cases[y1][0] = MUR_HORIZONTAL;
+    grille->cases[y2][0] = MUR_HORIZONTAL;
+}
+
 
 void placerCibles(Grille *grille) {
     int placer = 0;//compte le nombre de cible placer correctement 
@@ -76,11 +104,11 @@ void placerCibles(Grille *grille) {
 
             // place deux murs qui forment un angle droit autour de la cible de façon aléatoire
             if (rand() % 2) {
-                grille->cases[y + 1][x] = MUR_VERTICAL;
-                grille->cases[y][x + 1] = MUR_HORIZONTAL;
+                grille->cases[y + 1][x] = MUR_HORIZONTAL;
+                grille->cases[y][x + 1] = MUR_VERTICAL;
             } else {
-                grille->cases[y - 1][x] = MUR_VERTICAL;
-                grille->cases[y][x - 1] = MUR_HORIZONTAL;
+                grille->cases[y - 1][x] = MUR_HORIZONTAL;
+                grille->cases[y][x - 1] = MUR_VERTICAL;
             }
         }
     }

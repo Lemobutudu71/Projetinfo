@@ -14,8 +14,11 @@ int main(){
     
     creerGrille(grille);
     placerMursBords(grille);
+    placerMursPerpendiculaires(grille);
+    placerCibles(grille);
+    placerRobots(grille);
     afficherGrille(grille);
-
+    freeGrille(grille);
 
 
 
