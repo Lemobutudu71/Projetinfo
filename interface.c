@@ -11,3 +11,12 @@ int nb_joueur(int nb_joueur){ // demande le nombre de joueur
     }
     return nb_joueur;
 }
+
+R = 1;
+R2 = 2;
+R3 = 3;
+R4 = 4;
+
+int robothasard = ( rand () % 4 ) + 1;
+
+
