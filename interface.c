@@ -19,4 +19,7 @@ R4 = 4;
 
 int robothasard = ( rand () % 4 ) + 1;
 
+do{
+int ciblehasard = (rand() % 
+
 
