@@ -20,6 +20,8 @@ R4 = 4;
 int robothasard = ( rand () % 4 ) + 1;
 
 do{
-int ciblehasard = (rand() % 
+int xciblehasard = ((rand() % grille->largeur) + 1);
+int yciblehasard = ((rand() % grille->hauteur) + 1);
+}while( xciblehasard
 
 
