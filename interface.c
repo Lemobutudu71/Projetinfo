@@ -12,7 +12,7 @@ int nb_joueur(int nb_joueur){ // demande le nombre de joueur
     return nb_joueur;
 }
 
-R = 1;
+R1 = 1;
 R2 = 2;
 R3 = 3;
 R4 = 4;
