@@ -2,8 +2,8 @@
 
 #define MUR_VERTICAL '|'
 #define MUR_HORIZONTAL '-'
-#define MIN 15
-#define MAX 20
+#define MIN 15 // franchement ici je trouve pas intéressant de define ces valeurs, vaut mieux les mettre direct sinon ça peut nous gêner
+#define MAX 20 // pareil ici
 #define NB_CIBLES 18
 #define NB_ROBOTS 4
 
