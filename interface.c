@@ -12,16 +12,18 @@ int nb_joueur(int nb_joueur){ // demande le nombre de joueur
     return nb_joueur;
 }
 
-R1 = 1;
-R2 = 2;
-R3 = 3;
-R4 = 4;
-
-int robothasard = ( rand () % 4 ) + 1;
-
-do{
-int xciblehasard = ((rand() % grille->largeur) + 1);
-int yciblehasard = ((rand() % grille->hauteur) + 1);
-}while( xciblehasard
+int choisir_niveau_difficulte(){ // demande le niveau 
+    int niveau;
+    printf("Choisissez le niveau de difficulté :\n");
+    printf("1 : Facile\n");
+    printf("2 : Moyen\n");
+    printf("3 : Difficile\n");
+    scanf("%d", &niveau);
+    while (niveau < 1 || niveau > 3) {
+        printf("Veuillez choisir un niveau entre 1 et 3.\n");
+        scanf("%d", &niveau);
+    }
+    return niveau;
+}
 
 
