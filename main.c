@@ -19,11 +19,16 @@ int main(){
 
     afficherGrille(grille, hauteur, largeur);
     
-    Position robot, cible;
-    choisirRobotCible(grille, &robot, &cible);
-   
+    char robot, cible;
+    choisirRobotCible(grille, hauteur, largeur, &robot, &cible);
     int niveau_difficulte = 2;
     int duree_chrono;
+    printf("Veuillez choisir le niveau de difficulté entre 1 et 4\n");
+    scanf("%d", &niveau_difficulte);
+    while(niveau_difficulte < 1 || niveau_difficulte > 4){
+        printf("Le niveau de difficulte doit etre compris entre 1 et 4 \n");
+        scanf("%d", &niveau_difficulte);
+    }
     switch (niveau_difficulte) {
         case 1:
             duree_chrono = 10;
