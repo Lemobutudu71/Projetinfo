@@ -19,7 +19,7 @@ void initialiserGrille(char **grille, int hauteur, int largeur) {
 
 
 // Fonction pour vérifier si une position est valide pour placer une cible ou un robot
-int estPositionValide(int ligne, int col) {
+int estPositionValide(char **grille, int hauteur, int largeur, int ligne, int col) {
     // S'assurer que la position n'est pas sur la bordure et est vide
     if (ligne <= 0 || ligne >= hauteur - 1 || col <= 0 || col >= largeur - 1 || grille[ligne][col] != ' ') {
         return 0;
@@ -42,7 +42,7 @@ void placerCibles(char **grille, int hauteur, int largeur) {
         do {
             ligne = rand() % (hauteur - 2) + 1;
             col = rand() % (largeur - 2) + 1;
-        } while (!estPositionValide(ligne, col));
+        } while (!estPositionValide(char **grille, int hauteur, int largeur, ligne, col));
         grille[ligne][col] = 'A' + num;
     }
 }
