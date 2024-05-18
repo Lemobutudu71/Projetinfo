@@ -3,13 +3,10 @@
 #define CIBLES 18
 #define ROBOTS 4
 
-// Déclarer les variables globales
-int hauteur,
-largeur;
-char **grille;
+
 
 // Fonction pour initialiser la grille
-void initialiserGrille() {
+void initialiserGrille(char **grille; int hauteur; int largeur) {
     grille = (char **)malloc(hauteur * sizeof(char *));
     for (int i = 0; i < hauteur; i++) {
         grille[i] = (char *)malloc(largeur * sizeof(char));
@@ -38,7 +35,7 @@ int estPositionValide(int ligne, int col) {
 }
 
 // Fonction pour placer les cibles
-void placerCibles() {
+void placerCibles(char **grille; int hauteur; int largeur) {
     for (int num = 0; num < CIBLES; num++) {
         int ligne, col;
         do {
@@ -50,7 +47,7 @@ void placerCibles() {
 }
 
 // Fonction pour placer les robots
-void placerRobots() {
+void placerRobots(char **grille; int hauteur; int largeur) {
     for (int num = 0; num < ROBOTS; num++) {
         int ligne, col;
         do {
@@ -62,7 +59,7 @@ void placerRobots() {
 }
 
 // Fonction pour afficher la grille
-void afficherGrille() {
+void afficherGrille(char **grille; int hauteur; int largeur) {
     for (int ligne = 0; ligne < hauteur; ligne++) {
         // Afficher la bordure supérieure de chaque cellule
         for (int col = 0; col < largeur; col++) {
