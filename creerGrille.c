@@ -42,7 +42,7 @@ void placerCibles(char **grille, int hauteur, int largeur) {
         do {
             ligne = rand() % (hauteur - 2) + 1;
             col = rand() % (largeur - 2) + 1;
-        } while (!estPositionValide(char **grille, int hauteur, int largeur, ligne, col));
+        } while (!estPositionValide(grille, hauteur, largeur, ligne, col));
         grille[ligne][col] = 'A' + num;
     }
 }
