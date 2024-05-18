@@ -1,7 +1,5 @@
 #include "interface.h"
-#include <stdio.h>
-#include <time.h>
-#include <unistd.h>
+
 
 
 int nb_joueur(int nb_joueur){ // demande le nombre de joueur
