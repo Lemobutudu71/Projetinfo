@@ -60,22 +60,35 @@ void placerRobots(char **grille; int hauteur; int largeur) {
 }
 
 // Fonction pour afficher la grille
-void afficherGrille(char **grille; int hauteur; int largeur) {
+void afficherGrille() {
+    couleur("47"); // Fond blanc
     for (int ligne = 0; ligne < hauteur; ligne++) {
         // Afficher la bordure supérieure de chaque cellule
         for (int col = 0; col < largeur; col++) {
+            if (ligne == 0 || ligne == hauteur ) {
+                couleur("35"); // Texte bleu pour les bordures extérieures horizontales
+            } else {
+                couleur("33"); // Texte noir pour les lignes internes
+            }
             printf("+---");
         }
         printf("+\n");
-
         // Afficher le contenu des cellules
         for (int col = 0; col < largeur; col++) {
-            printf("| %c ", grille[ligne][col]);
+            if (col == 0 ) {
+                couleur("35"); // Texte bleu pour les bordures extérieures verticales
+            } else {
+                couleur("33"); // Texte noir pour les séparateurs internes
+            }
+            printf("|");
+            printf(" %c ", grille[ligne][col]);
         }
+        couleur("35");
         printf("|\n");
     }
     // Afficher la bordure inférieure de la dernière ligne
     for (int col = 0; col < largeur; col++) {
+        couleur("35"); // Texte bleu pour les bordures extérieures horizontales
         printf("+---");
     }
     printf("+\n");
