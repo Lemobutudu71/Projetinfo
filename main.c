@@ -18,14 +18,7 @@ int main(){
     placerRobots(grille, hauteur, largeur);
 
     afficherGrille(grille, hauteur, largeur);
-
-    for (int i = 0; i < hauteur; i++) {
-        free(grille[i]);
-    }
-    free(grille);
-
-    return 0;
-
+    
     Position robot, cible;
     choisirRobotCible(grille, &robot, &cible);
    
@@ -48,8 +41,16 @@ int main(){
     
     demanderMouvements(grille, &robot);
 
-    freeGrille(grille);
 
+
+
+
+
+    
+    for (int i = 0; i < hauteur; i++) {
+        free(grille[i]);
+    }
+    free(grille);
     return 0;
 
 
