@@ -12,39 +12,48 @@ int nb_joueur(int nb_joueur){ // demande le nombre de joueur
     return nb_joueur;
 }
 
-void choisirRobotCible(char grille[][20], Position *robot, Position *cible) {
-    int x, y;
-    do {
-        x = rand() % 18 + 1; 
-        y = rand() % 18 + 1;
-    } while (grille[y][x] != ' '); 
-    robot->x = x;
-    robot->y = y;
-    grille[y][x] = 'R'; // Marque la position du robot sur la grille
-
-    do { 
-        x = rand() % 18 + 1;
-        y = rand() % 18 + 1;
-    } while (grille[y][x] != ' ');
-    cible->x = x;
-    cible->y = y;
-    grille[y][x] = 'C'; 
-
-    for (int i = 0; i < 20; i++) {
-        for (int j = 0; j < 20; j++) {
-            printf("%c ", grille[i][j]);
+void choisirRobotEtCible(char **grille, int hauteur, int largeur, char *robot, char *cible) {
+    int robotTrouve = 0;
+    int cibleTrouvee = 0;
+    int robotLigne, robotCol, cibleLigne, cibleCol;
+    
+    // Choisir un robot aléatoire
+    while (!robotTrouve) {
+        robotLigne = rand() % hauteur;
+        robotCol = rand() % largeur;
+        if (grille[robotLigne][robotCol] >= '1' && grille[robotLigne][robotCol] <= '4') {
+            *robot = grille[robotLigne][robotCol];
+            robotTrouve = 1;
         }
-        printf("\n");
     }
+    
+    // Choisir une cible aléatoire
+    while (!cibleTrouvee) {
+        cibleLigne = rand() % hauteur;
+        cibleCol = rand() % largeur;
+        if (grille[cibleLigne][cibleCol] >= 'A' && grille[cibleLigne][cibleCol] <= 'R') {
+            *cible = grille[cibleLigne][cibleCol];
+            cibleTrouvee = 1;
+        }
+    }
+    
+    printf("Robot sélectionné : %c\n", *robot);
+    printf("Cible sélectionnée : %c\n", *cible);
 }
 
-void chronometrer(int duree_chrono) {
-    printf("Le chronomètre est lancé pendant %d secondes\n", duree_chrono);
-    sleep(duree_chrono);
+void chronometrer(int secondes) {
+    printf("Temps de réflexion : %d secondes\n", secondes);
+    for (int i = secondes; i > 0; i--) {
+        printf("%d\n", i);
+        sleep(1);
+    }
+    printf("Temps écoulé \n");
 }
 
-void demanderMouvements(char grille[][20], Position *robot) {
-    int dx, dy;
+
+void demanderMouvements(char grille[][20], Position *robot) {// a changer
+    int dx;
+    int dy;
     printf("Entrez les mouvements nécessaires (dx dy) : ");
     scanf("%d %d", &dx, &dy);
 
