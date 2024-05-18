@@ -3,18 +3,20 @@
 
     #include <stdlib.h>
 
-    typedef struct {
-    int largeur;
-    int hauteur;
-    char **cases;
-    } Grille;
+   typedef struct {
+    char contenu[3];  // Pour stocker des chiffres ou des icônes de robot
+    int MurVertical;
+    int MurHorizontal;
+} Cellule;
 
-    void creerGrille(Grille *grille);
-    void placerMursBords(Grille *grille);
-    void placerMursPerpendiculaires(Grille *grille);
-    void placerCibles(Grille *grille);
-    void placerRobots(Grille *grille);
-    void afficherGrille(Grille *grille);
-    void freeGrille(Grille grille);
+
+    Cellule **cellules;
+    Cellule **initialiserGrille(int hauteur, int largeur); 
+    void placerCiblesEtMurs(Cellule **cellules, int hauteur, int largeur);
+    void placerRobots(Cellule **cellules, int hauteur, int largeur); 
+    void afficherGrille(int hauteur, int largeur, Cellule **cellules);
+    void libererGrille(Cellule **cellules, int hauteur);
+
     
 #endif
+
