@@ -10,15 +10,21 @@
 
 int main(){
     srand(time(NULL));
-    int joueur = nb_joueur(joueur);
-    int hauteur = 15 + rand() % (20 - 15 + 1);
-    int largeur = 15 + rand() % (20 - 15 + 1);
 
-    Cellule **cellules = initialiserGrille(hauteur, largeur);
-    placerCiblesEtMurs(cellules, hauteur, largeur);
-    placerRobots(cellules, hauteur, largeur);
-    afficherGrille(hauteur, largeur, cellules);
-    libererGrille(cellules, hauteur);
+    hauteur = rand() % 6 + 15; // Génère un nombre entre 15 et 20
+    largeur = rand() % 6 + 15;  // Génère un nombre entre 15 et 20
+    initialiserGrille(grille, hauteur, largeur);
+    placerCibles(grille, hauteur, largeur);
+    placerRobots(grille, hauteur, largeur);
+
+    afficherGrille(grille, hauteur, largeur);
+
+    for (int i = 0; i < hauteur; i++) {
+        free(grille[i]);
+    }
+    free(grille);
+
+    return 0;
 
     Position robot, cible;
     choisirRobotCible(grille, &robot, &cible);
