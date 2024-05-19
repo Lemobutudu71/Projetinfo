@@ -4,12 +4,12 @@
 #define ROBOTS 4
 
 // Fonction pour initialiser la grille
-void initialiserGrille(char ***grille, int hauteur, int largeur) {
-    *grille = (char **)malloc(hauteur * sizeof(char *));
+void initialiserGrille() {
+    grille = (char **)malloc(hauteur * sizeof(char *));
     for (int i = 0; i < hauteur; i++) {
-        (*grille)[i] = (char *)malloc(largeur * sizeof(char));
+        grille[i] = (char *)malloc(largeur * sizeof(char));
         for (int j = 0; j < largeur; j++) {
-            (*grille)[i][j] = ' ';
+            grille[i][j] = ' ';
         }
     }
 }
