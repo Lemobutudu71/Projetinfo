@@ -42,33 +42,37 @@ void placerCibles(char **grille, int hauteur, int largeur) {
         CordCibles[num][0]=ligne;
         CordCibles[num][1]=col;
         
-        int choix = rand() % 2;
+        int choix = rand() % 4;
             switch(choix) {
-                case 0 :
+                case 0 : // Haut Gauche
                     MurH_Cibles[num][0]=ligne;
                     MurH_Cibles[num][1]=col;
-                    break;
-                case 1 :
-                    MurH_Cibles[num][0]=ligne + 1;
-                    MurH_Cibles[num][1]=col;
-                    break;
-                default :
-                    printf("Erreur d'allocation MurH_Cibles\n");
-                    break;
-            }
-            switch(choix) {
-                case 0 :
                     MurV_Cibles[num][0]=col;
                     MurV_Cibles[num][1]=ligne;
                     break;
-                case 1 :
+                case 1 : // Haut Droite
+                    MurH_Cibles[num][0]=ligne;
+                    MurH_Cibles[num][1]=col;
+                    MurV_Cibles[num][0]=col + 1;
+                    MurV_Cibles[num][1]=ligne;
+                    break;
+                case 2 : // Bas Gauche
+                    MurH_Cibles[num][0]=ligne + 1;
+                    MurH_Cibles[num][1]=col;
+                    MurV_Cibles[num][0]=col;
+                    MurV_Cibles[num][1]=ligne;
+                    break;
+                case 3 : // Bas Droite
+                    MurH_Cibles[num][0]=ligne + 1;
+                    MurH_Cibles[num][1]=col;
                     MurV_Cibles[num][0]=col + 1;
                     MurV_Cibles[num][1]=ligne;
                     break;
                 default :
-                    printf("Erreur d'allocation MurV_Cibles\n");
+                    printf("Erreur d'allocation MurCibles\n");
                     break;
             }
+            
             
     }
 }
