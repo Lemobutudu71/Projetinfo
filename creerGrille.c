@@ -60,7 +60,7 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
     for (int ligne = 0; ligne <=hauteur; ligne++) {
         // Afficher la bordure supérieure de chaque cellule
         for (int col = 0; col < largeur; col++) {
-            if ((ligne == 0) || (ligne == hauteur)) {
+            if ((ligne == 0) || (ligne == hauteur )) {
                 couleur("31"); // Texte rouge pour les lignes des bords supérieur et inférieur
             } else {
                 couleur("34"); // Texte bleu pour les lignes internes
@@ -69,7 +69,8 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
                 couleur("31"); // Texte rouge pour la bordure gauche et droite
             }
             printf("+");
-            if ((ligne == 0) || (ligne == hauteur)) {
+            if ((ligne == 0) || (ligne == hauteur || ligne==MurRandH[0] && col==0 || ligne==MurRandH[1] && col==0 
+            || ligne==MurRandH[2] && col==largeur - 1 || ligne==MurRandH[3] && col==largeur - 1 )) {
                 couleur("31"); // Texte rouge pour les lignes des bords supérieur et inférieur
             } else {
                 couleur("34"); // Texte bleu pour les lignes internes
@@ -83,7 +84,9 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
 
         // Afficher le contenu des cellules
         for (int col = 0; col < largeur; col++) {
-            if (col == 0) {
+            if (col == 0 || ligne==0 && col==MurRandV[0] || ligne==0 && col==MurRandV[1] 
+            || ligne==hauteur - 1 && col==MurRandV[2]
+            || ligne==hauteur - 1 && col==MurRandV[3] ) {
                 couleur("31"); // Texte rouge pour la bordure gauche et droite
             } else {
                 couleur("30"); // Texte noir pour le contenu des cellules
