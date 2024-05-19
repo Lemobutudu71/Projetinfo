@@ -13,7 +13,7 @@ int main(){
 
     int hauteur = rand() % 6 + 15; // Génère un nombre entre 15 et 20
     int largeur = rand() % 6 + 15;  // Génère un nombre entre 15 et 20
-    initialiserGrille(grille, hauteur, largeur);
+    grille = initialiserGrille(grille, hauteur, largeur);
     placerCibles(grille, hauteur, largeur);
     placerRobots(grille, hauteur, largeur);
 
