@@ -5,15 +5,23 @@
 #include "interface.h"
 #include "creerGrille.h"
 
-
+// Déclarer les variables globales
+int hauteur,
+largeur;
+char **grille;
+int MurRandH[4];
+int MurRandV[4];
+int CordCibles[CIBLES][2];
+int MurH_Cibles[CIBLES][2];
+int MurV_Cibles[CIBLES][2];
 
 
 int main(){
     srand(time(NULL));
-    int MurRandH[4];
-    int MurRandV[4];
-    int  hauteur = rand() % 6 + 15; // Génère un nombre entre 15 et 20
-    int largeur = rand() % 6 + 15;  // Génère un nombre entre 15 et 20
+    MurRandH[4];
+    MurRandV[4];
+    hauteur = rand() % 6 + 15; // Génère un nombre entre 15 et 20
+    largeur = rand() % 6 + 15;  // Génère un nombre entre 15 et 20
     for(int i=0; i<4; i++){
             MurRandH[i]=rand() % (hauteur - 2) + 1; 
             MurRandV[i]=rand() % (largeur - 2) + 1;
