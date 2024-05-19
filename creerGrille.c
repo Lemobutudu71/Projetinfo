@@ -4,7 +4,7 @@
 #define ROBOTS 4
 
 // Fonction pour initialiser la grille
-char **initialiserGrille(char **grille, int hauteur, int largeur) {
+void initialiserGrille() {
     grille = (char **)malloc(hauteur * sizeof(char *));
     for (int i = 0; i < hauteur; i++) {
         grille[i] = (char *)malloc(largeur * sizeof(char));
@@ -12,7 +12,6 @@ char **initialiserGrille(char **grille, int hauteur, int largeur) {
             grille[i][j] = ' ';
         }
     }
-    return grille;
 }
 
 // Fonction pour vérifier si une position est valide pour placer une cible ou un robot
@@ -37,8 +36,34 @@ void placerCibles(char **grille, int hauteur, int largeur) {
         do {
             ligne = rand() % (hauteur - 2) + 1;
             col = rand() % (largeur - 2) + 1;
+            
         } while (!estPositionValide(grille, hauteur, largeur, ligne, col));
         grille[ligne][col] = 'A' + num;
+        CordCibles[num][0]=ligne;
+        CordCibles[num][1]=col;
+        
+        int choix = rand() % 4;
+            switch(choix) {
+                case 0 :
+                    AngleDroit[num][0]=ligne;
+                    AngleDroit[num][1]=col;
+                    break;
+                case 1 :
+                    AngleDroit[num][0]=ligne + 1;
+                    AngleDroit[num][1]=col;
+                    break;
+                case 2 :
+                    AngleDroit[num][0]=ligne;
+                    AngleDroit[num][1]=col + 1;
+                    break;
+                case 3 :
+                    AngleDroit[num][0]=ligne + 1;
+                    AngleDroit[num][1]=col + 1;
+                    break;
+                default :
+                    printf("Erreur d'allocation murRand\n");
+                    break;
+            }
     }
 }
 
