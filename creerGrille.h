@@ -7,7 +7,7 @@
 
 
     char **grille;
-    void initialiserGrille(char **grille, int hauteur, int largeur);
+    char **initialiserGrille(char **grille, int hauteur, int largeur);
     void placerCibles(char **grille, int hauteur, int largeur);
     void placerRobots(char **grille, int hauteur, int largeur);
 
