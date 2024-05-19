@@ -4,7 +4,7 @@
 #define ROBOTS 4
 
 // Fonction pour initialiser la grille
-void initialiserGrille() {
+char **initialiserGrille(char **grille, int hauteur, int largeur) {
     grille = (char **)malloc(hauteur * sizeof(char *));
     for (int i = 0; i < hauteur; i++) {
         grille[i] = (char *)malloc(largeur * sizeof(char));
@@ -12,6 +12,7 @@ void initialiserGrille() {
             grille[i][j] = ' ';
         }
     }
+    return grille;
 }
 
 // Fonction pour vérifier si une position est valide pour placer une cible ou un robot
