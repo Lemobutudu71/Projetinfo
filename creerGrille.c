@@ -42,28 +42,34 @@ void placerCibles(char **grille, int hauteur, int largeur) {
         CordCibles[num][0]=ligne;
         CordCibles[num][1]=col;
         
-        int choix = rand() % 4;
+        int choix = rand() % 2;
             switch(choix) {
                 case 0 :
-                    AngleDroit[num][0]=ligne;
-                    AngleDroit[num][1]=col;
+                    MurH_Cibles[num][0]=ligne;
+                    MurH_Cibles[num][1]=col;
                     break;
                 case 1 :
-                    AngleDroit[num][0]=ligne + 1;
-                    AngleDroit[num][1]=col;
-                    break;
-                case 2 :
-                    AngleDroit[num][0]=ligne;
-                    AngleDroit[num][1]=col + 1;
-                    break;
-                case 3 :
-                    AngleDroit[num][0]=ligne + 1;
-                    AngleDroit[num][1]=col + 1;
+                    MurH_Cibles[num][0]=ligne + 1;
+                    MurH_Cibles[num][1]=col;
                     break;
                 default :
-                    printf("Erreur d'allocation murRand\n");
+                    printf("Erreur d'allocation MurH_Cibles\n");
                     break;
             }
+            switch(choix) {
+                case 0 :
+                    MurV_Cibles[num][0]=col;
+                    MurV_Cibles[num][1]=ligne;
+                    break;
+                case 1 :
+                    MurV_Cibles[num][0]=col + 1;
+                    MurV_Cibles[num][1]=ligne;
+                    break;
+                default :
+                    printf("Erreur d'allocation MurV_Cibles\n");
+                    break;
+            }
+            
     }
 }
 
@@ -94,11 +100,21 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
                 couleur("31"); // Texte rouge pour la bordure gauche et droite
             }
             printf("+");
-            if ((ligne == 0) || (ligne == hauteur || ligne==MurRandH[0] && col==0 || ligne==MurRandH[1] && col==0 
-            || ligne==MurRandH[2] && col==largeur - 1 || ligne==MurRandH[3] && col==largeur - 1 )) {
+            if ((ligne == 0) || ligne == hauteur ) {
                 couleur("31"); // Texte rouge pour les lignes des bords supérieur et inférieur
-            } else {
+            } 
+            else if (ligne==MurRandH[0] && col==0 || ligne==MurRandH[1] && col==0 
+            || ligne==MurRandH[2] && col==largeur - 1 || ligne==MurRandH[3] && col==largeur - 1){
+                couleur("31"); // Texte rouge pour les 4 mur horizontaux Rand
+            }
+            
+            else {
                 couleur("34"); // Texte bleu pour les lignes internes
+            }
+            for(int i=0; i<CIBLES; i++){
+                if(MurH_Cibles[i][0]==ligne && MurH_Cibles[i][1]==col){
+                    couleur("31"); // Texte rouge pour murs cibles
+                }
             }
             printf("---");
         }
@@ -109,17 +125,27 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
 
         // Afficher le contenu des cellules
         for (int col = 0; col < largeur; col++) {
-            if (col == 0 || ligne==0 && col==MurRandV[0] || ligne==0 && col==MurRandV[1] 
-            || ligne==hauteur - 1 && col==MurRandV[2]
-            || ligne==hauteur - 1 && col==MurRandV[3] ) {
+            if (col == 0 ) {
                 couleur("31"); // Texte rouge pour la bordure gauche et droite
-            } else {
+            } 
+            else if ( ligne==0 && col==MurRandV[0] || ligne==0 && col==MurRandV[1] 
+            || ligne==hauteur - 1 && col==MurRandV[2]
+            || ligne==hauteur - 1 && col==MurRandV[3]){
+                couleur("31"); // Texte rouge pour les 4 murs verticaux Rand
+            }
+            else {
                 couleur("30"); // Texte noir pour le contenu des cellules
+            }
+            for(int i=0; i<CIBLES; i++){
+                if(MurV_Cibles[i][0]==col && MurV_Cibles[i][1]==ligne){
+                    couleur("31"); // Texte rouge pour colonnes cibles
+                }
             }
             printf("|");
             if (grille[ligne][col] == ' ') {
                 printf("   "); // Espace pour les murs internes
             } else {
+                couleur("31");
                 printf(" %c ", grille[ligne][col]); // Contenu des cellules
             }
         }
@@ -127,6 +153,4 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
         printf("|\n");
     }
 }
-
-
 
