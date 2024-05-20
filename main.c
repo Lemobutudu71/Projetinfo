@@ -61,20 +61,18 @@ int main(){
     demanderMouvements(grille, &robot);
 
 
-
-
-
-
     
     for (int i = 0; i < hauteur; i++) {
         free(grille[i]);
     }
     free(grille);
-    return 0;
 
+    for (int i = 0; i < hauteur; i++) {
+            free(MurInterdit[i]);
+    }
+    free(MurInterdit);
 
-
-
+return 0;
 
     
 }
