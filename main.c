@@ -26,7 +26,7 @@ int main(){
             MurRandH[i]=rand() % (hauteur - 2) + 1; 
             MurRandV[i]=rand() % (largeur - 2) + 1;
             }
-    grille = initialiserGrille(grille, hauteur, largeur);
+    initialiserGrille(grille, hauteur, largeur);
     placerCibles(grille, hauteur, largeur);
     placerRobots(grille, hauteur, largeur);
 
