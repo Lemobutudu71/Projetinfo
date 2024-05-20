@@ -14,6 +14,17 @@ void initialiserGrille() {
     }
 }
 
+// Fonction pour initialiser la grille interdite
+void initialiserMurInterdit() {
+    MurInterdit = (int **)malloc(hauteur * sizeof(int *));
+    for (int i = 0; i < hauteur; i++) {
+        MurInterdit[i] = (int *)malloc(largeur * sizeof(int));
+        for (int j = 0; j < largeur; j++) {
+            MurInterdit[i][j] = ' ';
+        }
+    }
+}
+
 // Fonction pour vérifier si une position est valide pour placer une cible ou un robot
 int estPositionValide(char **grille, int hauteur, int largeur, int ligne, int col) {
     if (ligne <= 0 || ligne >= hauteur - 1 || col <= 0 || col >= largeur - 1 || grille[ligne][col] != ' ') {
@@ -153,6 +164,10 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
                 printf(" %c ", grille[ligne][col]); // Contenu des cellules
             }
         }
+        couleur("31"); // Texte rouge pour la bordure gauche et droite
+        printf("|\n");
+    }
+}
         couleur("31"); // Texte rouge pour la bordure gauche et droite
         printf("|\n");
     }
