@@ -1,26 +1,27 @@
-#define couleur(param) printf("\033[%sm",param)
+#include "creerGrille.h"
+
 
 #define CIBLES 18
 #define ROBOTS 4
 
 // Fonction pour initialiser la grille
-void initialiserGrille() {
-    grille = (char **)malloc(hauteur * sizeof(char *));
+void initialiserGrille(char ***grille, int hauteur, int largeur) {
+    *grille = (char **)malloc(hauteur * sizeof(char *));
     for (int i = 0; i < hauteur; i++) {
-        grille[i] = (char *)malloc(largeur * sizeof(char));
+        (*grille)[i] = (char *)malloc(largeur * sizeof(char));
         for (int j = 0; j < largeur; j++) {
-            grille[i][j] = ' ';
+            (*grille)[i][j] = ' ';
         }
     }
 }
 
 // Fonction pour initialiser la grille interdite
-void initialiserMurInterdit() {
-    MurInterdit = (int **)malloc(hauteur * sizeof(int *));
+void initialiserMurInterdit(int ***MurInterdit, int hauteur, int largeur) {
+    *MurInterdit = (int **)malloc(hauteur * sizeof(int *));
     for (int i = 0; i < hauteur; i++) {
-        MurInterdit[i] = (int *)malloc(largeur * sizeof(int));
+        (*MurInterdit)[i] = (int *)malloc(largeur * sizeof(int));
         for (int j = 0; j < largeur; j++) {
-            MurInterdit[i][j] = ' ';
+            (*MurInterdit)[i][j] = ' ';
         }
     }
 }
@@ -41,13 +42,13 @@ int estPositionValide(char **grille, int hauteur, int largeur, int ligne, int co
 }
 
 // Fonction pour placer les cibles
-void placerCibles(char **grille, int hauteur, int largeur) {
+void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[CIBLES][2], int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
+
     for (int num = 0; num < CIBLES; num++) {
         int ligne, col;
         do {
             ligne = rand() % (hauteur - 2) + 1;
             col = rand() % (largeur - 2) + 1;
-            
         } while (!estPositionValide(grille, hauteur, largeur, ligne, col));
         grille[ligne][col] = 'A' + num;
         CordCibles[num][0]=ligne;
@@ -101,7 +102,8 @@ void placerRobots(char **grille, int hauteur, int largeur) {
 }
 
 // Fonction pour afficher la grille
-void afficherGrille(char **grille, int hauteur, int largeur) {
+void afficherGrille(char **grille, int hauteur, int largeur, int MurRandH[4],
+int MurRandV[4],int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
     couleur("47"); // Fond blanc
     for (int ligne = 0; ligne <=hauteur; ligne++) {
         // Afficher la bordure supérieure de chaque cellule
@@ -137,7 +139,6 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
         printf("+\n");
 
         if (ligne == hauteur) break; // Pour éviter de dessiner une ligne de contenu en trop
-
         // Afficher le contenu des cellules
         for (int col = 0; col < largeur; col++) {
             if (col == 0 ) {
@@ -167,9 +168,5 @@ void afficherGrille(char **grille, int hauteur, int largeur) {
         couleur("31"); // Texte rouge pour la bordure gauche et droite
         printf("|\n");
     }
+    couleur("0");
 }
-        couleur("31"); // Texte rouge pour la bordure gauche et droite
-        printf("|\n");
-    }
-}
-
