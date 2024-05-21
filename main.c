@@ -24,7 +24,8 @@ int MurV_Cibles[CIBLES][2];
             MurRandV[i]=rand() % (largeur - 2) + 1;
     }
             
-    initialiserGrille(&grille, hauteur, largeur);      
+    initialiserGrille(&grille, hauteur, largeur);
+    initialiserMurInterdit(&MurInterdit, hauteur, largeur);  
     placerCibles(grille, hauteur, largeur, CordCibles, MurH_Cibles, MurV_Cibles);
     afficherGrille(grille, hauteur, largeur, MurRandH, MurRandV,MurH_Cibles, MurV_Cibles);
     placerRobots(grille, hauteur, largeur);
