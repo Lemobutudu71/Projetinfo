@@ -2,18 +2,41 @@
 #include "creerGrille.h"
 
 
-
-int nb_joueur(int nb_joueur){ // demande le nombre de joueur
-    printf("Veuillez saisir le nombre de joueur : /n ");
+int NombreJoueurs(int nb_joueur){ // demande le nombre de joueur
+    printf("Veuillez saisir le nombre de joueur : \n");
     scanf("%d", &nb_joueur);
     while(nb_joueur <= 1){
-        printf("Le nombre de joueur doit etre superieur a 1 /n");
+        printf("Le nombre de joueur doit etre superieur a 1 \n");
         scanf("%d", &nb_joueur);
     }
     return nb_joueur;
 }
 
-void choisirRobotEtCible(char **grille, int hauteur, int largeur, char *robot, char *cible) {
+int choixdifficulte(int niveau_difficulte){
+	int duree_chrono=0;
+	printf("Veuillez choisir le niveau de difficulté :\nniv 1 = 30\nniv 2 = 20\nniv 3 = 10\n");
+    scanf("%d", &niveau_difficulte);
+    while(niveau_difficulte < 1 || niveau_difficulte > 4){
+        printf("Le niveau de difficulte doit etre compris entre 1 et 4 \n");
+        scanf("%d", &niveau_difficulte);
+    }
+    switch (niveau_difficulte) {
+        case 1:
+            duree_chrono = 30;
+            break;
+        case 2:
+            duree_chrono = 20;
+            break;
+        case 3:
+            duree_chrono = 10;
+            break;
+        default:
+            duree_chrono = 20;
+    }
+    return duree_chrono;
+}
+
+void choisirRobotCible(char **grille, int hauteur, int largeur, char *robot, char *cible) {
     int robotTrouve = 0;
     int cibleTrouvee = 0;
     int robotLigne, robotCol, cibleLigne, cibleCol;
@@ -38,7 +61,7 @@ void choisirRobotEtCible(char **grille, int hauteur, int largeur, char *robot, c
         }
     }
     
-    printf("Robot sélectionné : %c\n", *robot);
+    printf("\nRobot sélectionné : %c\n", *robot);
     printf("Cible sélectionnée : %c\n", *cible);
 }
 
@@ -50,23 +73,4 @@ void chronometrer(int secondes) {
     }
     printf("Temps écoulé \n");
 }
-
-
-void demanderMouvements(char grille[][20], Position *robot) {// a changer
-    int dx;
-    int dy;
-    printf("Entrez les mouvements nécessaires (dx dy) : ");
-    scanf("%d %d", &dx, &dy);
-
-    int nouvelle_x = robot->x + dx;
-    int nouvelle_y = robot->y + dy;
-    if (nouvelle_x >= 1 && nouvelle_x <= 18 && nouvelle_y >= 1 && nouvelle_y <= 18 && grille[nouvelle_y][nouvelle_x] != '|' && grille[nouvelle_y][nouvelle_x] != '-' && grille[nouvelle_y][nouvelle_x] != 'R') {
-        robot->x = nouvelle_x;
-        robot->y = nouvelle_y;
-    } else {
-        printf("Mouvement invalide. IL ne pas traverser de murs ou d'autres robots.\n");
-        demanderMouvements(grille, robot); 
-    }
-}
-
 
