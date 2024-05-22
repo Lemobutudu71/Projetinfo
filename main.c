@@ -30,9 +30,12 @@ int MurV_Cibles[CIBLES][2];
     afficherGrille(grille, hauteur, largeur, MurRandH, MurRandV,MurH_Cibles, MurV_Cibles);
     placerRobots(grille, hauteur, largeur);
 	placerCibles(grille, hauteur, largeur, CordCibles, MurH_Cibles, MurV_Cibles);
+    int nb_joueur;
+    int niveau_difficulte = 2;
+     NombreJoueurs( nb_joueur);
     char robot, cible;
     choisirRobotCible(grille, hauteur, largeur, &robot, &cible);
-    int niveau_difficulte = 2;
+    choixdifficulte( niveau_difficulte);
     chronometrer(choixdifficulte(niveau_difficulte));
 
     for (int i = 0; i < hauteur; i++) {
