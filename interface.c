@@ -4,21 +4,34 @@
 
 int NombreJoueurs(int nb_joueur){ // demande le nombre de joueur
     printf("Veuillez saisir le nombre de joueur : \n");
-    scanf("%d", &nb_joueur);
+    if (scanf("%d",&nb_joueur) != 1) {
+        printf("Erreur \n");
+        exit(1);
+    }
     while(nb_joueur <= 1){
         printf("Le nombre de joueur doit etre superieur a 1 \n");
-        scanf("%d", &nb_joueur);
+      
+        if (scanf("%d",&nb_joueur) != 1) {
+            printf("Erreur \n");
+            exit(1);
+        }
     }
     return nb_joueur;
 }
 
 int choixdifficulte(int niveau_difficulte){
-	int duree_chrono=0;
+		int duree_chrono=0;
 	printf("Veuillez choisir le niveau de difficulté :\nniv 1 = 30\nniv 2 = 20\nniv 3 = 10\n");
-    scanf("%d", &niveau_difficulte);
+    if (scanf("%d",&niveau_difficulte) != 1) {
+        printf("Erreurr \n");
+        exit(1);
+    }
     while(niveau_difficulte < 1 || niveau_difficulte > 4){
         printf("Le niveau de difficulte doit etre compris entre 1 et 4 \n");
-        scanf("%d", &niveau_difficulte);
+        if (scanf("%d",&niveau_difficulte) != 1) {
+            printf("Erreurr \n");
+            exit(1);
+        }
     }
     switch (niveau_difficulte) {
         case 1:
