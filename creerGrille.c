@@ -27,7 +27,7 @@ void initialiserMurInterdit(int ***MurInterdit, int hauteur, int largeur) {
 }
 
 // Fonction pour vérifier si une position est valide pour placer une cible ou un robot
-int estPositionValide(char **grille, int hauteur, int largeur, int ligne, int col) {
+int estPositionValide(char **grille, int hauteur, int largeur, int ligne, int col, MurInterdit *murInterdits, int nombreMursInterdits) {
     if (ligne <= 0 || ligne >= hauteur - 1 || col <= 0 || col >= largeur - 1 || grille[ligne][col] != ' ') {
         return 0;
     }
@@ -38,21 +38,26 @@ int estPositionValide(char **grille, int hauteur, int largeur, int ligne, int co
             }
         }
     }
+    for (int i = 0; i < nombreMursInterdits; i++) {
+        if (murInterdits[i].ligne == ligne && murInterdits[i].col == col) {
+            return 0;
+        }
+    }
     return 1;
 }
 
 // Fonction pour placer les cibles
-void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[CIBLES][2], int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
-
+void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[][2], int MurH_Cibles[][2], int MurV_Cibles[][2], MurInterdit **murInterdits, int *nombreMursInterdits) {
     for (int num = 0; num < CIBLES; num++) {
         int ligne, col;
         do {
             ligne = rand() % (hauteur - 2) + 1;
             col = rand() % (largeur - 2) + 1;
-        } while (!estPositionValide(grille, hauteur, largeur, ligne, col));
+        } while (!estPositionValide(grille, hauteur, largeur, ligne, col, *murInterdits, *nombreMursInterdits));
         grille[ligne][col] = 'A' + num;
-        CordCibles[num][0]=ligne;
-        CordCibles[num][1]=col;
+        CordCibles[num][0] = ligne;
+        CordCibles[num][1] = col;
+
         
         int choix = rand() % 4;
             switch(choix) {
@@ -84,19 +89,26 @@ void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[CIBLES
                     printf("Erreur d'allocation MurCibles\n");
                     break;
             }
-            
+         // Ajouter les murs à murInterdits
+         *nombreMursInterdits += 2;
+         *murInterdits = (MurInterdit *)realloc(*murInterdits, 
+          *nombreMursInterdits * sizeof(MurInterdit));
+         (*murInterdits)[*nombreMursInterdits - 2].ligne = MurH_Cibles[num][0];
+         (*murInterdits)[*nombreMursInterdits - 2].col = MurH_Cibles[num][1];
+         (*murInterdits)[*nombreMursInterdits - 1].ligne = MurV_Cibles[num][1];
+         (*murInterdits)[*nombreMursInterdits - 1].col = MurV_Cibles[num][0];
             
     }
 }
 
 // Fonction pour placer les robots
-void placerRobots(char **grille, int hauteur, int largeur) {
+void placerRobots(char **grille, int hauteur, int largeur, MurInterdit *murInterdits, int nombreMursInterdits) {
     for (int num = 0; num < ROBOTS; num++) {
         int ligne, col;
         do {
             ligne = rand() % (hauteur - 2) + 1;
             col = rand() % (largeur - 2) + 1;
-        } while (grille[ligne][col] != ' ');
+        } while (!estPositionValide(grille, hauteur, largeur, ligne, col, murInterdits, nombreMursInterdits));
         grille[ligne][col] = '1' + num; // Utiliser des chiffres pour différencier les robots
     }
 }
@@ -170,3 +182,42 @@ int MurRandV[4],int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
     }
     couleur("0");
 }
+
+// Ajouter les murs des bords de la grille comme murs interdits
+void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nombreMursInterdits, int MurRandH[4], int MurRandV[4]){ 
+    for (int i = 0; i < hauteur; i++) {
+        (*nombreMursInterdits)++;
+        *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        (*murInterdits)[(*nombreMursInterdits) - 1].ligne = i;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = 0;
+
+        (*nombreMursInterdits)++;
+        *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        (*murInterdits)[(*nombreMursInterdits) - 1].ligne = i;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = largeur - 1;
+    }
+
+    for (int j = 0; j < largeur; j++) {
+        (*nombreMursInterdits)++;
+        *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        (*murInterdits)[(*nombreMursInterdits) - 1].ligne = 0;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = j;
+
+        (*nombreMursInterdits)++;
+        *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        (*murInterdits)[(*nombreMursInterdits) - 1].ligne = hauteur - 1;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = j;
+    }
+
+    for (int i = 0; i < 4; i++) {
+        MurRandH[i] = rand() % (hauteur - 2) + 1;
+        MurRandV[i] = rand() % (largeur - 2) + 1;
+        (*nombreMursInterdits) += 2;
+        *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        (*murInterdits)[(*nombreMursInterdits) - 2].ligne = MurRandH[i];
+        (*murInterdits)[(*nombreMursInterdits) - 2].col = (i < 2) ? 0 : largeur - 1;
+        (*murInterdits)[(*nombreMursInterdits) - 1].ligne = (i < 2) ? 0 : hauteur - 1;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = MurRandV[i];
+    } 
+}
+
