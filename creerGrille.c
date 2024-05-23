@@ -210,7 +210,7 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nom
         (*murInterdits)[(*nombreMursInterdits) - 1].col = j; //Un mur interdit à la dernière ligne 
     }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) { // je pense ça c'est pas bon pour les 2 murs perpendiculaires 
         MurRandH[i] = rand() % (hauteur - 2) + 1;
         MurRandV[i] = rand() % (largeur - 2) + 1;
         (*nombreMursInterdits) += 2;
