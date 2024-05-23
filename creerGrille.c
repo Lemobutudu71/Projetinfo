@@ -185,28 +185,29 @@ int MurRandV[4],int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
 
 // Ajouter les murs des bords de la grille comme murs interdits
 void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nombreMursInterdits, int MurRandH[4], int MurRandV[4]){ 
-    for (int i = 0; i < hauteur; i++) {
+    for (int i = 0; i < hauteur; i++) {  //pour chaque ligne i, ajoute 2 murs interdits
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = i;
-        (*murInterdits)[(*nombreMursInterdits) - 1].col = 0;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = 0; // mur interdit à la première colonne 
 
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = i;
-        (*murInterdits)[(*nombreMursInterdits) - 1].col = largeur - 1;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = largeur - 1; // mur interdit à la dernière colonne
+
     }
 
-    for (int j = 0; j < largeur; j++) {
+    for (int j = 0; j < largeur; j++) { ////pour chaque colonne i, ajoute 2 murs interdits
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = 0;
-        (*murInterdits)[(*nombreMursInterdits) - 1].col = j;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = j; // mur interdit à la première ligne 
 
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = hauteur - 1;
-        (*murInterdits)[(*nombreMursInterdits) - 1].col = j;
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = j; //Un mur interdit à la dernière ligne 
     }
 
     for (int i = 0; i < 4; i++) {
@@ -215,8 +216,19 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nom
         (*nombreMursInterdits) += 2;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
         (*murInterdits)[(*nombreMursInterdits) - 2].ligne = MurRandH[i];
-        (*murInterdits)[(*nombreMursInterdits) - 2].col = (i < 2) ? 0 : largeur - 1;
-        (*murInterdits)[(*nombreMursInterdits) - 1].ligne = (i < 2) ? 0 : hauteur - 1;
+       if(i < 2){ 
+           (*murInterdits)[(*nombreMursInterdits) - 2].col = 0;
+        }
+        else if( i >= 2){
+            (*murInterdits)[(*nombreMursInterdits) - 2].col = largeur - 1;;
+        }
+        if(i < 2){
+            (*murInterdits)[(*nombreMursInterdits) - 1].ligne = 0;
+            
+        }
+        else if(i >= 2){
+            (*murInterdits)[(*nombreMursInterdits) - 1].ligne = hauteur - 1;
+        }
         (*murInterdits)[(*nombreMursInterdits) - 1].col = MurRandV[i];
     } 
 }
