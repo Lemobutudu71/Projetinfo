@@ -16,12 +16,13 @@ void initialiserGrille(char ***grille, int hauteur, int largeur) {
 }
 
 // Fonction pour initialiser la grille interdite
-void initialiserMurInterdit(int ***MurInterdit, int hauteur, int largeur) {
-    *MurInterdit = (int **)malloc(hauteur * sizeof(int *));
+void initialiserMurInterdit(MurInterdit **murInterdits, int hauteur, int largeur) {
+    murInterdits = malloc(hauteur * sizeof(int *));
     for (int i = 0; i < hauteur; i++) {
-        (*MurInterdit)[i] = (int *)malloc(largeur * sizeof(int));
+        murInterdits[i] = malloc(largeur * sizeof(int));
         for (int j = 0; j < largeur; j++) {
-            (*MurInterdit)[i][j] = ' ';
+            murInterdits[i]->col = ' ';
+            murInterdits[j]->ligne =  ' ';
         }
     }
 }
@@ -58,7 +59,7 @@ void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[][2], 
         CordCibles[num][0] = ligne;
         CordCibles[num][1] = col;
 
-        
+
         int choix = rand() % 4;
             switch(choix) {
                 case 0 : // Haut Gauche
@@ -91,12 +92,13 @@ void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[][2], 
             }
          // Ajouter les murs à murInterdits
          *nombreMursInterdits += 2;
-         *murInterdits = (MurInterdit *)realloc(*murInterdits, *nombreMursInterdits * sizeof(MurInterdit));
+         *murInterdits = (MurInterdit *)realloc(*murInterdits, 
+          *nombreMursInterdits * sizeof(MurInterdit));
          (*murInterdits)[*nombreMursInterdits - 2].ligne = MurH_Cibles[num][0];
          (*murInterdits)[*nombreMursInterdits - 2].col = MurH_Cibles[num][1];
          (*murInterdits)[*nombreMursInterdits - 1].ligne = MurV_Cibles[num][1];
          (*murInterdits)[*nombreMursInterdits - 1].col = MurV_Cibles[num][0];
-            
+
     }
 }
 
@@ -113,8 +115,8 @@ void placerRobots(char **grille, int hauteur, int largeur, MurInterdit *murInter
 }
 
 // Fonction pour afficher la grille
-void afficherGrille(char **grille, int hauteur, int largeur, int MurRandH[4],
-int MurRandV[4],int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
+void afficherGrille(char **grille, int hauteur, int largeur, int **MurRandH,
+int **MurRandV,int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
     couleur("47"); // Fond blanc
     for (int ligne = 0; ligne <=hauteur; ligne++) {
         // Afficher la bordure supérieure de chaque cellule
@@ -131,11 +133,11 @@ int MurRandV[4],int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
             if ((ligne == 0) || ligne == hauteur ) {
                 couleur("31"); // Texte rouge pour les lignes des bords supérieur et inférieur
             } 
-            else if (ligne==MurRandH[0] && col==0 || ligne==MurRandH[1] && col==0 
-            || ligne==MurRandH[2] && col==largeur - 1 || ligne==MurRandH[3] && col==largeur - 1){
+            else if (ligne==*MurRandH[0] && col==0 || ligne==*MurRandH[1] && col==0 
+            || ligne==*MurRandH[2] && col==largeur - 1 || ligne==*MurRandH[3] && col==largeur - 1){
                 couleur("31"); // Texte rouge pour les 4 mur horizontaux Rand
             }
-            
+
             else {
                 couleur("34"); // Texte bleu pour les lignes internes
             }
@@ -155,9 +157,9 @@ int MurRandV[4],int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
             if (col == 0 ) {
                 couleur("31"); // Texte rouge pour la bordure gauche et droite
             } 
-            else if ( ligne==0 && col==MurRandV[0] || ligne==0 && col==MurRandV[1] 
-            || ligne==hauteur - 1 && col==MurRandV[2]
-            || ligne==hauteur - 1 && col==MurRandV[3]){
+            else if ( ligne==0 && col==*MurRandV[0] || ligne==0 && col==*MurRandV[1] 
+            || ligne==hauteur - 1 && col==*MurRandV[2]
+            || ligne==hauteur - 1 && col==*MurRandV[3]){
                 couleur("31"); // Texte rouge pour les 4 murs verticaux Rand
             }
             else {
@@ -183,7 +185,7 @@ int MurRandV[4],int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
 }
 
 // Ajouter les murs des bords de la grille comme murs interdits
-void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nombreMursInterdits, int MurRandH[4], int MurRandV[4]){ 
+void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nombreMursInterdits, int **MurRandH, int **MurRandV){ 
     for (int i = 0; i < hauteur; i++) {  //pour chaque ligne i, ajoute 2 murs interdits
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
@@ -209,26 +211,44 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nom
         (*murInterdits)[(*nombreMursInterdits) - 1].col = j; //Un mur interdit à la dernière ligne 
     }
 
+
+    for (int i = 0; i < 4; i++) {
+        MurRandH[i] = (int *)malloc(sizeof(int));
+        MurRandV[i] = (int *)malloc(sizeof(int));
+        if (MurRandH[i] == NULL || MurRandV[i] == NULL) {
+            // Gérer l'échec d'allocation de mémoire
+            printf("Erreur d'allocation mémoire");
+            exit(1);
+        }
+    }
     for (int i = 0; i < 4; i++) { // je pense ça c'est pas bon pour les 2 murs perpendiculaires 
-        MurRandH[i] = rand() % (hauteur - 2) + 1;
-        MurRandV[i] = rand() % (largeur - 2) + 1;
+        *MurRandH[i] = rand() % (hauteur - 2) + 1;
+        *MurRandV[i] = rand() % (largeur - 2) + 1;
         (*nombreMursInterdits) += 2;
+        int a = *MurRandH[i];
+        int b = *MurRandV[i];
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
-        (*murInterdits)[(*nombreMursInterdits) - 2].ligne = MurRandH[i];
+
+        (*murInterdits)[(*nombreMursInterdits) - 1].ligne = a;
        if(i < 2){ 
-           (*murInterdits)[(*nombreMursInterdits) - 2].col = 0;
+           (*murInterdits)[(*nombreMursInterdits) - 1].col = 0;
         }
-        else if( i >= 2){
-            (*murInterdits)[(*nombreMursInterdits) - 2].col = largeur - 1;;
+        else{
+            (*murInterdits)[(*nombreMursInterdits) - 1].col = largeur - 1;;
         }
+
+
+        *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        
         if(i < 2){
             (*murInterdits)[(*nombreMursInterdits) - 1].ligne = 0;
-            
+
         }
         else if(i >= 2){
             (*murInterdits)[(*nombreMursInterdits) - 1].ligne = hauteur - 1;
         }
-        (*murInterdits)[(*nombreMursInterdits) - 1].col = MurRandV[i];
+        (*murInterdits)[(*nombreMursInterdits) - 1].col = b;
     } 
 }
+
 
