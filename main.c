@@ -26,7 +26,7 @@ int nombreMursInterdits = 0;
     }
             
     initialiserGrille(&grille, hauteur, largeur);
-    initialiserMurInterdit(&MurInterdit, hauteur, largeur);  
+    initialiserMurInterdit(&murInterdits, hauteur, largeur);  
         placerCibles(grille, hauteur, largeur, CordCibles, MurH_Cibles, MurV_Cibles, &murInterdits, &nombreMursInterdits);
             placerRobots(grille, hauteur, largeur, murInterdits, nombreMursInterdits);
 
@@ -48,10 +48,10 @@ int nombreMursInterdits = 0;
 
         for (int i = 0; i < hauteur; i++) {
                 free(grille[i]);
-                free(MurInterdit[i]);
+        
             }
             free(grille);
-            free(MurInterdit);
+        
             free(murInterdits);
 
 return 0;
