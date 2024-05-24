@@ -11,7 +11,6 @@ int main(){
  MurInterdit *murInterdits = NULL;
 int largeur, hauteur;
 char **grille;
-int **MurInterdit;
 int MurRandH[4];
 int MurRandV[4];
 int CordCibles[CIBLES][2];
