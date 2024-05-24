@@ -87,3 +87,33 @@ void chronometrer(int secondes) {
     printf("Temps écoulé \n");
 }
 
+void nombresMouv(int nb_joueur, Joueur **joueur) {
+    joueur = malloc(nb_joueur * sizeof(Joueur));
+    if (joueur == NULL) {
+        printf("Erreur d'allocation mémoire\n");
+        exit(1);
+    }
+    //ajouter grille et faire en sorte de la masquer
+
+    // demander nombre mouvement 
+    for (int i = 0; i < nb_joueur; i++) {
+        printf("Joueur %d, veuillez saisir le nombre de mouvement : ", i);
+        if (scanf("%d", &joueur[i]->nbMouv) != 1) {
+            printf("Erreur de saisie\n");
+            exit(1);
+        }
+
+        while (joueur[i]->nbMouv <= 0) {
+            printf("Le nombre de mouvement doit être supérieur à 0\n");
+            printf("Joueur %d, veuillez saisir le nombre de mouvement : ", i);
+            if (scanf("%d", &joueur[i]->nbMouv) != 1) {
+                printf("Erreur de saisie\n");
+                exit(1);
+            }
+        }
+        joueur[i]->points = 0;
+    }
+}
+
+
+
