@@ -20,10 +20,10 @@ int NombreJoueurs(int nb_joueur){ // demande le nombre de joueur
 }
 
 int choixdifficulte(int niveau_difficulte){
-		int duree_chrono=0;
+	int duree_chrono=0;
 	printf("Veuillez choisir le niveau de difficulté :\nniv 1 = 30\nniv 2 = 20\nniv 3 = 10\n");
     if (scanf("%d",&niveau_difficulte) != 1) {
-        printf("Erreurr \n");
+        printf("Erreur \n");
         exit(1);
     }
     while(niveau_difficulte < 1 || niveau_difficulte > 4){
@@ -87,33 +87,39 @@ void chronometrer(int secondes) {
     printf("Temps écoulé \n");
 }
 
-void nombresMouv(int nb_joueur, Joueur **joueur) {
+void nombresMouv(Joueur **joueur, int nb_joueur){
     joueur = malloc(nb_joueur * sizeof(Joueur));
     if (joueur == NULL) {
         printf("Erreur d'allocation mémoire\n");
         exit(1);
     }
-    //ajouter grille et faire en sorte de la masquer
-
-    // demander nombre mouvement 
-    for (int i = 0; i < nb_joueur; i++) {
-        printf("Joueur %d, veuillez saisir le nombre de mouvement : ", i);
-        if (scanf("%d", &joueur[i]->nbMouv) != 1) {
+  
+    int i = 0; 
+    int a = 0; 
+    for (int i = 0; i< nb_joueur; i++){
+         printf("Veuillez saisir le nombre de mouvement :\n");
+        scanf("%d",&joueur[i]->nbMouv);
+        a = joueur[i]->nbMouv;
+        if (a != 1) {
             printf("Erreur de saisie\n");
             exit(1);
         }
-
         while (joueur[i]->nbMouv <= 0) {
-            printf("Le nombre de mouvement doit être supérieur à 0\n");
-            printf("Joueur %d, veuillez saisir le nombre de mouvement : ", i);
-            if (scanf("%d", &joueur[i]->nbMouv) != 1) {
-                printf("Erreur de saisie\n");
-                exit(1);
-            }
-        }
+               printf("Le nombre de mouvement doit être supérieur à 0\n");
+               printf("Veuillez saisir le nombre de mouvement : \n");
+               scanf("%d",&joueur[i]->nbMouv);
+                a = joueur[i]->nbMouv;
+               if (a != 1) {
+                   printf("Erreur de saisie\n");
+                   exit(1);
+               }
+           }
         joueur[i]->points = 0;
+
     }
+   
 }
+
 
 
 
