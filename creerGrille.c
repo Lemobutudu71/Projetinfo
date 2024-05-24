@@ -7,8 +7,16 @@
 // Fonction pour initialiser la grille
 void initialiserGrille(char ***grille, int hauteur, int largeur) {
     *grille = (char **)malloc(hauteur * sizeof(char *));
+    if (*grille == NULL){
+        printf("Erreur d'allocation memoire");
+        exit(1);
+    }
     for (int i = 0; i < hauteur; i++) {
         (*grille)[i] = (char *)malloc(largeur * sizeof(char));
+        if ((*grille)[i] == NULL){
+            printf("Erreur d'allocation memoire");
+            exit(1);
+        }
         for (int j = 0; j < largeur; j++) {
             (*grille)[i][j] = ' ';
         }
@@ -18,8 +26,12 @@ void initialiserGrille(char ***grille, int hauteur, int largeur) {
 // Fonction pour initialiser la grille interdite
 void initialiserMurInterdit(MurInterdit **murInterdits, int hauteur, int largeur) {
     murInterdits = malloc(hauteur * sizeof(int *));
+    if (murInterdits == NULL){
+        printf("Erreur d'allocation memoire");
+        exit(1);
+    }
     for (int i = 0; i < hauteur; i++) {
-        murInterdits[i] = malloc(largeur * sizeof(int));
+        murInterdits[i] = malloc(largeur * sizeof(MurInterdit));
         for (int j = 0; j < largeur; j++) {
             murInterdits[i]->col = ' ';
             murInterdits[j]->ligne =  ' ';
@@ -29,6 +41,7 @@ void initialiserMurInterdit(MurInterdit **murInterdits, int hauteur, int largeur
 
 // Fonction pour vérifier si une position est valide pour placer une cible ou un robot
 int estPositionValide(char **grille, int hauteur, int largeur, int ligne, int col, MurInterdit *murInterdits, int nombreMursInterdits) {
+    
     if (ligne <= 0 || ligne >= hauteur - 1 || col <= 0 || col >= largeur - 1 || grille[ligne][col] != ' ') {
         return 0;
     }
@@ -49,12 +62,15 @@ int estPositionValide(char **grille, int hauteur, int largeur, int ligne, int co
 
 // Fonction pour placer les cibles
 void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[][2], int MurH_Cibles[][2], int MurV_Cibles[][2], MurInterdit **murInterdits, int *nombreMursInterdits) {
+    
     for (int num = 0; num < CIBLES; num++) {
-        int ligne, col;
+        int ligne = 0;
+        int col = 0;
         do {
             ligne = rand() % (hauteur - 2) + 1;
             col = rand() % (largeur - 2) + 1;
         } while (!estPositionValide(grille, hauteur, largeur, ligne, col, *murInterdits, *nombreMursInterdits));
+        
         grille[ligne][col] = 'A' + num;
         CordCibles[num][0] = ligne;
         CordCibles[num][1] = col;
@@ -94,6 +110,10 @@ void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[][2], 
          *nombreMursInterdits += 2;
          *murInterdits = (MurInterdit *)realloc(*murInterdits, 
           *nombreMursInterdits * sizeof(MurInterdit));
+        if ( *murInterdits == NULL) {
+            printf("Erreur d'allocation memoire");
+            exit(1);
+        }
          (*murInterdits)[*nombreMursInterdits - 2].ligne = MurH_Cibles[num][0];
          (*murInterdits)[*nombreMursInterdits - 2].col = MurH_Cibles[num][1];
          (*murInterdits)[*nombreMursInterdits - 1].ligne = MurV_Cibles[num][1];
@@ -104,6 +124,7 @@ void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[][2], 
 
 // Fonction pour placer les robots
 void placerRobots(char **grille, int hauteur, int largeur, MurInterdit *murInterdits, int nombreMursInterdits) {
+    
     for (int num = 0; num < ROBOTS; num++) {
         int ligne, col;
         do {
@@ -117,6 +138,7 @@ void placerRobots(char **grille, int hauteur, int largeur, MurInterdit *murInter
 // Fonction pour afficher la grille
 void afficherGrille(char **grille, int hauteur, int largeur, int **MurRandH,
 int **MurRandV,int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
+    
     couleur("47"); // Fond blanc
     for (int ligne = 0; ligne <=hauteur; ligne++) {
         // Afficher la bordure supérieure de chaque cellule
@@ -133,8 +155,7 @@ int **MurRandV,int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
             if ((ligne == 0) || ligne == hauteur ) {
                 couleur("31"); // Texte rouge pour les lignes des bords supérieur et inférieur
             } 
-            else if (ligne==*MurRandH[0] && col==0 || ligne==*MurRandH[1] && col==0 
-            || ligne==*MurRandH[2] && col==largeur - 1 || ligne==*MurRandH[3] && col==largeur - 1){
+            else if (ligne==*MurRandH[0] && col==0 || ligne==*MurRandH[1] && col==0  || ligne==*MurRandH[2] && col==largeur - 1 || ligne==*MurRandH[3] && col==largeur - 1){
                 couleur("31"); // Texte rouge pour les 4 mur horizontaux Rand
             }
 
@@ -186,14 +207,23 @@ int **MurRandV,int MurH_Cibles[CIBLES][2], int MurV_Cibles[CIBLES][2]) {
 
 // Ajouter les murs des bords de la grille comme murs interdits
 void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nombreMursInterdits, int **MurRandH, int **MurRandV){ 
+    
     for (int i = 0; i < hauteur; i++) {  //pour chaque ligne i, ajoute 2 murs interdits
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        if ( *murInterdits == NULL) {
+            printf("Erreur d'allocation memoire");
+            exit(1);
+        }
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = i;
         (*murInterdits)[(*nombreMursInterdits) - 1].col = 0; // mur interdit à la première colonne 
 
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        if ( *murInterdits == NULL) {
+            printf("Erreur d'allocation memoire");
+            exit(1);
+        }
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = i;
         (*murInterdits)[(*nombreMursInterdits) - 1].col = largeur - 1; // mur interdit à la dernière colonne
 
@@ -202,11 +232,19 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nom
     for (int j = 0; j < largeur; j++) { ////pour chaque colonne i, ajoute 2 murs interdits
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        if ( *murInterdits == NULL) {
+            printf("Erreur d'allocation memoire");
+            exit(1);
+        }
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = 0;
         (*murInterdits)[(*nombreMursInterdits) - 1].col = j; // mur interdit à la première ligne 
 
         (*nombreMursInterdits)++;
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        if ( *murInterdits == NULL) {
+            printf("Erreur d'allocation memoire");
+            exit(1);
+        }
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = hauteur - 1;
         (*murInterdits)[(*nombreMursInterdits) - 1].col = j; //Un mur interdit à la dernière ligne 
     }
@@ -228,6 +266,10 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nom
         int a = *MurRandH[i];
         int b = *MurRandV[i];
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        if ( *murInterdits == NULL) {
+            printf("Erreur d'allocation memoire");
+            exit(1);
+        }
 
         (*murInterdits)[(*nombreMursInterdits) - 1].ligne = a;
        if(i < 2){ 
@@ -239,6 +281,10 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nom
 
 
         *murInterdits = (MurInterdit *)realloc(*murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+        if ( *murInterdits == NULL) {
+            printf("Erreur d'allocation memoire");
+            exit(1);
+        }
         
         if(i < 2){
             (*murInterdits)[(*nombreMursInterdits) - 1].ligne = 0;
@@ -250,5 +296,7 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits, int *nom
         (*murInterdits)[(*nombreMursInterdits) - 1].col = b;
     } 
 }
+
+
 
 
