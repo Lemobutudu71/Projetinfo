@@ -44,15 +44,26 @@ int nombreMursInterdits = 0;
     choisirRobotCible(grille, hauteur, largeur, &robot, &cible);
     
     chronometrer(choixdifficulte(niveau_difficulte));
+    printf("Ok");
+    Joueur *joueur = NULL; 
 
+     nombresMouv(nb_joueur, &joueur);
+
+
+    printf("Ok");
+    
         for (int i = 0; i < hauteur; i++) {
                 free(grille[i]);
                
             }
+
+            free(joueur);
             free(grille);
             free(murInterdits);
             free(MurRandH);
             free(MurRandV);
+    
 
 return 0;
 }
+
