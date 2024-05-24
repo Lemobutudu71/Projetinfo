@@ -91,8 +91,7 @@ void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[][2], 
             }
          // Ajouter les murs à murInterdits
          *nombreMursInterdits += 2;
-         *murInterdits = (MurInterdit *)realloc(*murInterdits, 
-          *nombreMursInterdits * sizeof(MurInterdit));
+         *murInterdits = (MurInterdit *)realloc(*murInterdits, *nombreMursInterdits * sizeof(MurInterdit));
          (*murInterdits)[*nombreMursInterdits - 2].ligne = MurH_Cibles[num][0];
          (*murInterdits)[*nombreMursInterdits - 2].col = MurH_Cibles[num][1];
          (*murInterdits)[*nombreMursInterdits - 1].ligne = MurV_Cibles[num][1];
