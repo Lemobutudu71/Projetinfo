@@ -88,8 +88,8 @@ int main() {
     printf("Le joueur %d va faire %d mouvements\n", player + 1,
            nmbMouv[player]);
     for(int i=0; i<nmbMouv[player]; i++){
-      int direction;
-      direction = choix_direction();
+      int direction = 0;
+      direction = choix_direction(direction);
       printf("direction ok");
       deplacement(&robot, &cible, direction, murInterdits, nombreMursInterdits,
                   grille, hauteur, largeur);
