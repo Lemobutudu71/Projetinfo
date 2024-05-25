@@ -49,74 +49,171 @@ int choixdifficulte(int niveau_difficulte){
     return duree_chrono;
 }
 
-void choisirRobotCible(char **grille, int hauteur, int largeur, char *robot, char *cible) {
-    int robotTrouve = 0;
-    int cibleTrouvee = 0;
-    int robotLigne, robotCol, cibleLigne, cibleCol;
-    
-    // Choisir un robot aléatoire
-    while (!robotTrouve) {
-        robotLigne = rand() % hauteur;
-        robotCol = rand() % largeur;
-        if (grille[robotLigne][robotCol] >= '1' && grille[robotLigne][robotCol] <= '4') {
-            *robot = grille[robotLigne][robotCol];
-            robotTrouve = 1;
-        }
+void choisirRobotCible(char **grille, int hauteur, int largeur, Robot *robot,
+                       Cible *cible) {
+  int robotTrouve = 0;
+  int cibleTrouvee = 0;
+
+  // Choisir un robot aléatoire
+  while (!robotTrouve) {
+    robot->ligne = rand() % hauteur;
+    robot->col = rand() % largeur;
+    if (grille[robot->ligne][robot->col] >= '1' &&
+        grille[robot->ligne][robot->col] <= '4') {
+      robot->signe = grille[robot->ligne][robot->col];
+      robotTrouve = 1;
     }
-    
-    // Choisir une cible aléatoire
-    while (!cibleTrouvee) {
-        cibleLigne = rand() % hauteur;
-        cibleCol = rand() % largeur;
-        if (grille[cibleLigne][cibleCol] >= 'A' && grille[cibleLigne][cibleCol] <= 'R') {
-            *cible = grille[cibleLigne][cibleCol];
-            cibleTrouvee = 1;
-        }
+  }
+
+  // Choisir une cible aléatoire
+  while (!cibleTrouvee) {
+    cible->ligne = rand() % hauteur;
+    cible->col = rand() % largeur;
+    if (grille[cible->ligne][cible->col] >= 'A' &&
+        grille[cible->ligne][cible->col] <= 'R') {
+      cible->signe = grille[cible->ligne][cible->col];
+      cibleTrouvee = 1;
     }
-    
-    printf("\nRobot sélectionné : %c\n", *robot);
-    printf("Cible sélectionnée : %c\n", *cible);
+  }
+
+  printf("\nRobot sélectionné : %c\n", robot->signe);
+  printf("Cible sélectionnée : %c\n", cible->signe);
 }
 
 void chronometrer(int secondes) {
-    printf("Temps de réflexion : %d secondes\n", secondes);
-    for (int i = secondes; i > 0; i--) {
-        printf("%d\n", i);
-        sleep(1);
+  printf("Temps de réflexion : %d secondes\n", secondes);
+  for (int i = secondes; i > 0; i--) {
+    printf("%d\n", i);
+    sleep(1);
+    printf("\033[F\033[J");
+  }
+  clrscr();
+  clrscr();
+  clrscr();
+  printf("Temps écoulé \n");
+}
+int MIN(int My_array[], int len) {
+  int num = My_array[0];
+  for (int i = 1; i < len; i++) {
+    if (My_array[i] < num) {
+      num = My_array[i];
     }
-    printf("Temps écoulé \n");
+  }
+  return num;
 }
 
-void nombresMouv(Joueur **joueur, int nb_joueur){
-    joueur = malloc(nb_joueur * sizeof(Joueur));
-    if (joueur == NULL) {
-        printf("Erreur d'allocation mémoire\n");
-        exit(1);
+void choix_player(int **nmbMouv, int nb_Joueur, char **grille, Robot *robot,
+                  Cible *cible, int *player) {
+  *nmbMouv = malloc(nb_Joueur * sizeof(int *));
+  for (int i = 0; i < nb_Joueur; i++) {
+    printf("Combien de mouvement voulez vous faire joueur %d ?\n", i + 1);
+    if (scanf("%d", &(*nmbMouv)[i]) != 1) {
+      printf("Erreur de saisie. Veuillez saisir un entier.\n");
+      exit(1);
     }
-  
-    int i = 0; 
-    int a = 0; 
-    for (int i = 0; i< nb_joueur; i++){
-         printf("Veuillez saisir le nombre de mouvement :\n");
-        scanf("%d",&joueur[i]->nbMouv);
-        a = joueur[i]->nbMouv;
-        if (a != 1) {
-            printf("Erreur de saisie\n");
-            exit(1);
-        }
-        while (joueur[i]->nbMouv <= 0) {
-               printf("Le nombre de mouvement doit être supérieur à 0\n");
-               printf("Veuillez saisir le nombre de mouvement : \n");
-               scanf("%d",&joueur[i]->nbMouv);
-                a = joueur[i]->nbMouv;
-               if (a != 1) {
-                   printf("Erreur de saisie\n");
-                   exit(1);
-               }
-           }
-        joueur[i]->points = 0;
+  }
+  for (int i = 0; i < nb_Joueur; i++) {
+    if ((*nmbMouv)[i] == MIN(*nmbMouv, nb_Joueur)) {
+      *player = i;
+      printf("Joueur %d à toi de jouer\n", i + 1);
+    }
+  }
+}
 
+int choix_direction() {
+    int direction = 0;
+    int result;
+
+    do {
+        printf("Veuillez entrer une direction (NORD=1, EST=2, SUD=3, OUEST=4):\n");
+        result = scanf("%d", &direction);
+
+        if (result != 1) {
+            printf("Entrée invalide. Veuillez entrer un nombre entier.\n");
+            clearInputBuffer(); // Vider le buffer d'entrée
+        } else if (direction < 1 || direction > 4) {
+            printf("Entrée hors limites. Veuillez entrer un nombre entre 1 et 4.\n");
+            clearInputBuffer(); // Vider le buffer d'entrée
+        } else {
+            break; // Entrée valide
+        }
+    } while (1);
+
+    printf("La direction est %d\n", direction);
+    return direction;
+}
+
+void deplacement(Robot *robot, Cible *cible, int direction,
+                 MurInterdit *mursInterdits, int nombreMursInterdits,
+                 char **grille) {
+  int exligne = robot->ligne;
+  int excol = robot->col;
+  switch (direction) {
+  case 1: // Nord
+    while (robot->ligne != mursInterdits[robot->ligne].ligne &&
+           robot->col != mursInterdits[robot->col].col) {
+      for (int i = 0; i < nombreMursInterdits; i++) {
+        if (robot->ligne == mursInterdits[robot->ligne].ligne &&
+            robot->col == mursInterdits[robot->col].col) {
+          break;
+        } else {
+          robot->ligne--;
+        }
+      }
     }
+    grille[robot->ligne][robot->col] = robot->signe;
+    grille[exligne][excol] = ' ';
+    break;
+  case 2: // Est
+    while (robot->ligne != mursInterdits[robot->ligne].ligne &&
+           robot->col != mursInterdits[robot->col].col) {
+      for (int i = 0; i < nombreMursInterdits; i++) {
+        if (robot->ligne == mursInterdits[robot->ligne].ligne &&
+            robot->col == mursInterdits[robot->col].col) {
+          break;
+        } else {
+          robot->col++;
+        }
+      }
+    }
+    grille[robot->ligne][robot->col] = robot->signe;
+    grille[exligne][excol] = ' ';
+    break;
+  case 3: // Sud
+    while (robot->ligne != mursInterdits[robot->ligne].ligne &&
+           robot->col != mursInterdits[robot->col].col) {
+      for (int i = 0; i < nombreMursInterdits; i++) {
+        if (robot->ligne == mursInterdits[robot->ligne].ligne &&
+            robot->col == mursInterdits[robot->col].col) {
+          break;
+        } else {
+          robot->ligne++;
+        }
+      }
+    }
+    grille[robot->ligne][robot->col] = robot->signe;
+    grille[exligne][excol] = ' ';
+    break;
+  case 4: // Ouest
+    while (robot->ligne != mursInterdits[robot->ligne].ligne &&
+           robot->col != mursInterdits[robot->col].col) {
+      for (int i = 0; i < nombreMursInterdits; i++) {
+        if (robot->ligne == mursInterdits[robot->ligne].ligne &&
+            robot->col == mursInterdits[robot->col].col) {
+          break;
+        } else {
+          robot->col--;
+        }
+      }
+    }
+    grille[robot->ligne][robot->col] = robot->signe;
+    grille[exligne][excol] = ' ';
+    break;
+  default:
+    printf("Erreur de déplacement\n");
+    break;
+  }
+}
    
 }
 
