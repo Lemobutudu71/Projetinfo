@@ -68,42 +68,58 @@ int main() {
   afficherGrille(grille, hauteur, largeur, &MurRandH, &MurRandV, MurH_Cibles,
      MurV_Cibles);
   // début du jeu Z'ESSTTT PARTIIII !!!
-  int nb_joueur = 1;
-  int niveau_difficulte = 2;
-  int *nmbMouv = NULL;
-  int duree_chrono = 0;
-  int player = 0;
-  NombreJoueurs(&nb_joueur);
-  Robot robot;
-  Cible cible;
-  printf("Début du jeu\n");
-  for (int i = 0; i < 5; i++) {
-    printf("Manche %d\n", i + 1);
-    choisirRobotCible(grille, hauteur, largeur, &robot, &cible);
-    duree_chrono = choixdifficulte(niveau_difficulte);
-    afficherGrille(grille, hauteur, largeur, &MurRandH, &MurRandV, MurH_Cibles,
-                   MurV_Cibles);
-    chronometrer(duree_chrono);
-    choix_player(&nmbMouv, nb_joueur, grille, &robot, &cible, &player);
-    printf("Le joueur %d va faire %d mouvements\n", player + 1,
-           nmbMouv[player]);
-    for(int i=0; i<nmbMouv[player]; i++){
-      int direction = 0;
-      direction = choix_direction(direction);
-      printf("direction ok");
-      deplacement(&robot, &cible, direction, murInterdits, nombreMursInterdits,
-                  grille, hauteur, largeur);
-      afficherGrille(grille, hauteur, largeur, &MurRandH, &MurRandV,
-                     MurH_Cibles, MurV_Cibles);
-    }
-  }
-  for (int i = 0; i < hauteur; i++) {
-    free(grille[i]);
-  }
-  free(grille);
-  free(murInterdits);
-  free(MurRandH);
-  free(MurRandV);
+   int nb_joueur = 1;
+    int niveau_difficulte = 2;
+    int *nmbMouv = NULL;
+    int duree_chrono = 0;
+    int joueurActuel = 0;
+    int *pointsJoueurs;
+    NombreJoueurs(&nb_joueur);
+    Robot robot;
+    Cible cible;
 
-  return 0;
-}
+    pointsJoueurs = malloc(nb_joueur * sizeof(int));
+    if (pointsJoueurs == NULL) {
+      printf("Erreur d'allocation mémoire\n");
+      exit(1);
+    }
+    for (int i = 0; i < nb_joueur; i++) {
+      pointsJoueurs[i] = 0;
+    }
+    printf("Début du jeu\n");
+
+    for (int i = 0; i < 5; i++) { // Par exemple 5 manches
+      printf("Manche %d\n", i + 1);
+
+      ChoisirRobotCible(grille, hauteur, largeur, &robot, &cible);
+      duree_chrono = choixdifficulte(niveau_difficulte);
+      afficherGrille(grille, hauteur, largeur, &MurRandH, &MurRandV, MurH_Cibles, MurV_Cibles);
+      chronometrer(duree_chrono);
+
+      choix_joueur(&nmbMouv, nb_joueur, grille, &robot, &cible, &joueurActuel);
+      printf("Le joueur %d va faire %d mouvements\n", joueurActuel + 1, nmbMouv[joueurActuel]);
+
+      JoueurTour(grille, hauteur, largeur, &robot, &cible, murInterdits, nombreMursInterdits, nmbMouv, joueurActuel, pointsJoueurs, &MurRandH, &MurRandV, MurH_Cibles, MurV_Cibles);
+
+      // Afficher les points après chaque manche
+      printf("Points après la manche %d:\n", i + 1);
+      for (int j = 0; j < nb_joueur; j++) {
+        printf("Joueur %d: %d points\n", j + 1, pointsJoueurs[j]);
+      }
+    }
+
+
+
+
+    for (int i = 0; i < hauteur; i++) {
+      free(grille[i]);
+    }
+    free(grille);
+    free(murInterdits);
+    free(MurRandH);
+    free(MurRandV);
+    free(pointsJoueurs);
+    free(nmbMouv);
+
+    return 0;
+  }
