@@ -1,52 +1,51 @@
 #include "interface.h"
 #include "creerGrille.h"
 
+void NombreJoueurs(int *nb_joueur) { // demande le nombre de joueur
+  printf("Veuillez saisir un nombre de joueur entre 1 et 4 : \n");
+  if (scanf("%d", &(*nb_joueur)) != 1) {
+    printf("Erreur \n");
+    exit(1);
+  }
+  while (*nb_joueur <= 1 && *nb_joueur > 4) {
+    printf("Le nombre de joueur doit etre compris entre 1 et 4 \n");
 
-int NombreJoueurs(int nb_joueur){ // demande le nombre de joueur
-    printf("Veuillez saisir le nombre de joueur : \n");
-    if (scanf("%d",&nb_joueur) != 1) {
-        printf("Erreur \n");
-        exit(1);
+    if (scanf("%d", &(*nb_joueur)) != 1) {
+      printf("Erreur \n");
+      exit(1);
     }
-    while(nb_joueur <= 1){
-        printf("Le nombre de joueur doit etre superieur a 1 \n");
-      
-        if (scanf("%d",&nb_joueur) != 1) {
-            printf("Erreur \n");
-            exit(1);
-        }
-    }
-    return nb_joueur;
+  }
 }
 
-int choixdifficulte(int niveau_difficulte){
-	int duree_chrono=0;
-	printf("Veuillez choisir le niveau de difficulté :\nniv 1 = 30\nniv 2 = 20\nniv 3 = 10\n");
-    if (scanf("%d",&niveau_difficulte) != 1) {
-        printf("Erreur \n");
-        exit(1);
+int choixdifficulte(int niveau_difficulte) {
+  int duree_chrono = 0;
+  printf("\nVeuillez choisir le niveau de difficulté :\nniv 1 = 30\nniv 2 = "
+         "20\nniv 3 = 10\n");
+  if (scanf("%d", &niveau_difficulte) != 1) {
+    printf("Erreurr \n");
+    exit(1);
+  }
+  while (niveau_difficulte < 1 || niveau_difficulte > 3) {
+    printf("Le niveau de difficulte doit etre compris entre 1 et 3 \n");
+    if (scanf("%d", &niveau_difficulte) != 1) {
+      printf("Erreurr \n");
+      exit(1);
     }
-    while(niveau_difficulte < 1 || niveau_difficulte > 4){
-        printf("Le niveau de difficulte doit etre compris entre 1 et 4 \n");
-        if (scanf("%d",&niveau_difficulte) != 1) {
-            printf("Erreurr \n");
-            exit(1);
-        }
-    }
-    switch (niveau_difficulte) {
-        case 1:
-            duree_chrono = 30;
-            break;
-        case 2:
-            duree_chrono = 20;
-            break;
-        case 3:
-            duree_chrono = 10;
-            break;
-        default:
-            duree_chrono = 20;
-    }
-    return duree_chrono;
+  }
+  switch (niveau_difficulte) {
+  case 1:
+    duree_chrono = 30;
+    break;
+  case 2:
+    duree_chrono = 20;
+    break;
+  case 3:
+    duree_chrono = 10;
+    break;
+  default:
+    duree_chrono = 20;
+  }
+  return duree_chrono;
 }
 
 void choisirRobotCible(char **grille, int hauteur, int largeur, Robot *robot,
@@ -121,97 +120,105 @@ void choix_player(int **nmbMouv, int nb_Joueur, char **grille, Robot *robot,
 }
 
 int choix_direction(int direction) {
-    int result;
+  int result;
 
-    do {
-        printf("Veuillez entrer une direction (NORD=1, EST=2, SUD=3, OUEST=4):\n");
-        result = scanf("%d", &direction);
+  do {
+    printf("Veuillez entrer une direction (NORD=1, EST=2, SUD=3, OUEST=4):\n");
+    result = scanf("%d", &direction);
 
-        if (result != 1) {
-            printf("Entrée invalide. Veuillez entrer un nombre entier.\n");
-            clearInputBuffer(); // Vider le buffer d'entrée
-        } else if (direction < 1 || direction > 4) {
-            printf("Entrée hors limites. Veuillez entrer un nombre entre 1 et 4.\n");
-            clearInputBuffer(); // Vider le buffer d'entrée
-        } else {
-            break; // Entrée valide
-        }
-    } while (1);
+    if (result != 1) {
+      printf("Entrée invalide. Veuillez entrer un nombre entier.\n");
+      clearInputBuffer(); // Vider le buffer d'entrée
+    } else if (direction < 1 || direction > 4) {
+      printf("Entrée hors limites. Veuillez entrer un nombre entre 1 et 4.\n");
+      clearInputBuffer(); // Vider le buffer d'entrée
+    } else {
+      break; // Entrée valide
+    }
+  } while (1);
 
-    printf("La direction est %d\n", direction);
-    return direction;
+  printf("La direction est %d\n", direction);
+  return direction;
 }
 
 void deplacement(Robot *robot, Cible *cible, int direction,
                  MurInterdit *mursInterdits, int nombreMursInterdits,
                  char **grille, int hauteur, int largeur) {
-    printf("coucou\n");
-    int exligne = robot->ligne;
-    int excol = robot->col;
-    int obstacle = 0;
+  printf("coucou\n");
+  int exligne = robot->ligne;
+  int excol = robot->col;
+  int obstacle = 0;
 
-    switch (direction) {
-    case 1: // Nord
-        while (robot->ligne > 0) {
-            robot->ligne--;
-            obstacle = 0;
-            for (int i = 0; i < nombreMursInterdits; i++) {
-                if (robot->ligne == mursInterdits[i].ligne && robot->col == mursInterdits[i].col) {
-                    obstacle = 1;
-                    robot->ligne++; // Revenir à la position précédente
-                    break;
-                }
-            }
-            if (obstacle) break;
+  switch (direction) {
+  case 1: // Nord
+    while (robot->ligne > 0) {
+      robot->ligne--;
+      obstacle = 0;
+      for (int i = 0; i < nombreMursInterdits; i++) {
+        if (robot->ligne == mursInterdits[i].ligne &&
+            robot->col == mursInterdits[i].col) {
+          obstacle = 1;
+          break;
         }
+      }
+      if (obstacle)
         break;
-    case 2: // Est
-        while (robot->col < largeur - 1) {
-            robot->col++;
-            obstacle = 0;
-            for (int i = 0; i < nombreMursInterdits; i++) {
-                if (robot->ligne == mursInterdits[i].ligne && robot->col == mursInterdits[i].col) {
-                    obstacle = 1;
-                    robot->col--; // Revenir à la position précédente
-                    break;
-                }
-            }
-            if (obstacle) break;
-        }
-        break;
-    case 3: // Sud
-        while (robot->ligne < hauteur - 1) {
-            robot->ligne++;
-            obstacle = 0;
-            for (int i = 0; i < nombreMursInterdits; i++) {
-                if (robot->ligne == mursInterdits[i].ligne && robot->col == mursInterdits[i].col) {
-                    obstacle = 1;
-                    robot->ligne--; // Revenir à la position précédente
-                    break;
-                }
-            }
-            if (obstacle) break;
-        }
-        break;
-    case 4: // Ouest
-        while (robot->col > 0) {
-            robot->col--;
-            obstacle = 0;
-            for (int i = 0; i < nombreMursInterdits; i++) {
-                if (robot->ligne == mursInterdits[i].ligne && robot->col == mursInterdits[i].col) {
-                    obstacle = 1;
-                    robot->col++; // Revenir à la position précédente
-                    break;
-                }
-            }
-            if (obstacle) break;
-        }
-        break;
-    default:
-        printf("Erreur de déplacement\n");
-        return;
     }
+    break;
+  case 2: // Est
+    while (robot->col < largeur - 1) {
+      robot->col++;
+      obstacle = 0;
+      for (int i = 0; i < nombreMursInterdits; i++) {
+        if (robot->ligne == mursInterdits[i].ligne &&
+            robot->col == mursInterdits[i].col) {
+          obstacle = 1;
+          break;
+        }
+      }
+      if (obstacle)
+        break;
+    }
+    break;
+  case 3: // Sud
+    while (robot->ligne < hauteur - 1) {
+      robot->ligne++;
+      obstacle = 0;
+      for (int i = 0; i < nombreMursInterdits; i++) {
+        if (robot->ligne == mursInterdits[i].ligne &&
+            robot->col == mursInterdits[i].col) {
+          obstacle = 1;
+          break;
+        }
+      }
+      if (obstacle)
+        break;
+    }
+    break;
+  case 4: // Ouest
+    while (robot->col > 0) {
+      robot->col--;
+      obstacle = 0;
+      for (int i = 0; i < nombreMursInterdits; i++) {
+        if (robot->ligne == mursInterdits[i].ligne &&
+            robot->col == mursInterdits[i].col) {
+          obstacle = 1;
+          break;
+        }
+      }
+      if (obstacle)
+        break;
+    }
+    break;
+  default:
+    printf("Erreur de déplacement\n");
+    return;
+  }
 
+  // Mettre à jour la grille
+  grille[exligne][excol] = ' '; // Vider l'ancienne position
+  grille[robot->ligne][robot->col] = robot->signe; // Mettre le robot à la nouvelle position
+}
     // Mettre à jour la grille
     grille[exligne][excol] = ' '; // Vider l'ancienne position
     grille[robot->ligne][robot->col] = robot->signe; // Mettre le robot à la nouvelle position
