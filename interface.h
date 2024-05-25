@@ -40,7 +40,7 @@ int choix_direction(int direction);
 
 void Points(int *pointsJoueurs, int nb_joueurs, int joueurActuel, int nb_deplacements, int nb_deplacements_effectues, int robotAtteintCible);
 
-
+void AfficherGagnant(int *pointsJoueurs, int nb_joueurs);
 #endif
 
 
