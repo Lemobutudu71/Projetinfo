@@ -267,3 +267,25 @@ int MurV_Cibles[CIBLES][2]) {
   }
 
 
+void AfficherGagnant(int *pointsJoueurs, int nb_joueurs) {
+  int maxPoints = pointsJoueurs[0];
+  int gagnant = 0;
+  int egalite= 0;
+
+  for (int i = 1; i < nb_joueurs; i++) {
+    if (pointsJoueurs[i] > maxPoints) {
+      maxPoints = pointsJoueurs[i];
+      gagnant = i;
+      egalite = 0;
+    } 
+    else if (pointsJoueurs[i] == maxPoints) {
+      egalite = 1;
+    }
+  }
+
+  if (egalite) {
+    printf("Il y a une égalité entre plusieurs joueurs !\n");
+  } else {
+    printf("Le gagnant est le joueur %d avec %d points !\n", gagnant + 1, maxPoints);
+  }
+}
