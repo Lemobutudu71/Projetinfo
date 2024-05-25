@@ -1,3 +1,6 @@
+
+
+
 #ifndef Interface_h
 #define Interface_h
 
@@ -21,7 +24,7 @@ typedef struct {
   char signe;
 } Cible;
 
-void NombreJoueurs(int *nb_joueur);
+int NombreJoueurs(int nb_joueur);
 void choisirRobotCible(char **grille, int hauteur, int largeur, Robot *robot,
                        Cible *cible);
 void chronometrer(int duree_chrono);
@@ -31,9 +34,10 @@ void choix_player(int **nmbMouv, int m_bJoueur, char **grille, Robot *robot,
 int MIN(int My_array[], int len);
 
 void deplacement(Robot *robot, Cible *cible, int direction,
-                      MurInterdit *murInterdits, int nombreMursInterdits, char ** grille);
-int choix_direction();
+                      MurInterdit *murInterdits, int nombreMursInterdits, char ** grille, int hauteur, int largeur);
+int choix_direction(int direction);
 
 
 
 #endif
+
