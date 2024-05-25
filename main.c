@@ -71,7 +71,7 @@ int main() {
   int *nmbMouv = NULL;
   int duree_chrono = 0;
   int player = 0;
-  NombreJoueurs(&nb_joueur);
+  nb_joueur = NombreJoueurs(nb_joueur);
   Robot robot;
   Cible cible;
   printf("Début du jeu\n");
@@ -81,15 +81,17 @@ int main() {
     duree_chrono = choixdifficulte(niveau_difficulte);
     afficherGrille(grille, hauteur, largeur, &MurRandV, &MurRandH, MurH_Cibles,
                    MurV_Cibles);
-    chronometrer(duree_chrono);
+    //chronometrer(duree_chrono);
     choix_player(&nmbMouv, nb_joueur, grille, &robot, &cible, &player);
     printf("Le joueur %d va faire %d mouvements\n", player + 1,
            nmbMouv[player]);
-      int direction;
-      direction = choix_direction();
+     printf("ok");
+      int direction = 0;
+      printf("direction ok");
+      direction = choix_direction(direction);
       printf("direction ok");
       deplacement(&robot, &cible, direction, murInterdits, nombreMursInterdits,
-                  grille);
+                  grille, hauteur, largeur);
       afficherGrille(grille, hauteur, largeur, &MurRandV, &MurRandH,
                      MurH_Cibles, MurV_Cibles);
   }
