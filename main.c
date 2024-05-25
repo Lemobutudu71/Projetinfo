@@ -109,6 +109,7 @@ int main() {
     }
 
 
+   AfficherGagnant(pointsJoueurs, nb_joueur);
 
 
     for (int i = 0; i < hauteur; i++) {
