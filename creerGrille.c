@@ -5,7 +5,8 @@
 
 void clearInputBuffer() {
   int c;
-  while ((c = getchar()) != '\n' && c != EOF);
+  while ((c = getchar()) != '\n' && c != EOF)
+    ;
 }
 
 // Fonction pour initialiser la grille
@@ -82,13 +83,13 @@ void placerCibles(char **grille, int hauteur, int largeur, int CordCibles[][2],
       break;
     }
     // Ajouter les murs à murInterdits
-    *nombreMursInterdits += 2;
     *murInterdits = (MurInterdit *)realloc(
-        *murInterdits, *nombreMursInterdits * sizeof(MurInterdit));
-    (*murInterdits)[*nombreMursInterdits - 2].ligne = MurH_Cibles[num][0];
-    (*murInterdits)[*nombreMursInterdits - 2].col = MurH_Cibles[num][1];
-    (*murInterdits)[*nombreMursInterdits - 1].ligne = MurV_Cibles[num][1];
-    (*murInterdits)[*nombreMursInterdits - 1].col = MurV_Cibles[num][0];
+        *murInterdits, (*nombreMursInterdits + 2) * sizeof(MurInterdit));
+    (*murInterdits)[*nombreMursInterdits].ligne = MurH_Cibles[num][0];
+    (*murInterdits)[*nombreMursInterdits].col = MurH_Cibles[num][1];
+    (*murInterdits)[*nombreMursInterdits + 1].ligne = MurV_Cibles[num][1];
+    (*murInterdits)[*nombreMursInterdits + 1].col = MurV_Cibles[num][0];
+    *nombreMursInterdits += 2;
   }
 }
 
@@ -195,14 +196,14 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits,
     }
     (*murInterdits)[(*nombreMursInterdits) - 1].ligne = i;
     (*murInterdits)[(*nombreMursInterdits) - 1].col =
-        0; // mur interdit à la première colonne
+        -1; // mur interdit à la première colonne
 
     (*nombreMursInterdits)++;
     *murInterdits = (MurInterdit *)realloc(
         *murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
     (*murInterdits)[*nombreMursInterdits - 1].ligne = i;
     (*murInterdits)[*nombreMursInterdits - 1].col =
-        largeur - 1; // mur interdit à la dernière colonne
+        largeur - 2; // mur interdit à la dernière colonne
   }
 
   for (int j = 0; j < largeur;
@@ -210,52 +211,77 @@ void murExterieur(int hauteur, int largeur, MurInterdit **murInterdits,
     (*nombreMursInterdits)++;
     *murInterdits = (MurInterdit *)realloc(
         *murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
-    (*murInterdits)[*nombreMursInterdits - 1].ligne = 0;
+    (*murInterdits)[*nombreMursInterdits - 1].ligne = -1;
     (*murInterdits)[*nombreMursInterdits - 1].col =
         j; // mur interdit à la première ligne
 
     (*nombreMursInterdits)++;
     *murInterdits = (MurInterdit *)realloc(
         *murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
-    (*murInterdits)[*nombreMursInterdits - 1].ligne = hauteur - 1;
+    (*murInterdits)[*nombreMursInterdits - 1].ligne = hauteur - 2;
     (*murInterdits)[*nombreMursInterdits - 1].col =
         j; // Un mur interdit à la dernière ligne
   }
-  // ajout des murs interdits Haut et Bas
-  (*nombreMursInterdits) += 4;
+  
+
+  // Ajout des murs interdits Haut et Bas
   *murInterdits = (MurInterdit *)realloc(
-      *murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+      *murInterdits, (*nombreMursInterdits + 4) * sizeof(MurInterdit));
 
-  (*murInterdits)[*nombreMursInterdits - 4].ligne = 0;
-  (*murInterdits)[*nombreMursInterdits - 4].col = (*MurRandV)[0];
+  if (*murInterdits == NULL) {
+      perror("Erreur de réallocation de mémoire");
+      exit(EXIT_FAILURE);
+  }
 
-  (*murInterdits)[*nombreMursInterdits - 3].ligne = 0;
-  (*murInterdits)[*nombreMursInterdits - 3].col = (*MurRandV)[1];
+  // Murs interdits en haut
+  printf("Ajout du mur interdit en haut: ligne = 0, col = %d\n", (*MurRandV)[0]);
+  (*murInterdits)[*nombreMursInterdits].ligne = 0;
+  (*murInterdits)[*nombreMursInterdits].col = (*MurRandV)[0];
 
-  (*murInterdits)[*nombreMursInterdits - 2].ligne = hauteur - 1;
-  (*murInterdits)[*nombreMursInterdits - 2].col = (*MurRandV)[2];
+  printf("Ajout du mur interdit en haut: ligne = 0, col = %d\n", (*MurRandV)[1]);
+  (*murInterdits)[*nombreMursInterdits + 1].ligne = 0;
+  (*murInterdits)[*nombreMursInterdits + 1].col = (*MurRandV)[1];
 
-  (*murInterdits)[*nombreMursInterdits - 1].ligne = hauteur - 1;
-  (*murInterdits)[*nombreMursInterdits - 1].col = (*MurRandV)[3];
+  // Murs interdits en bas
+  printf("Ajout du mur interdit en bas: ligne = %d, col = %d\n", hauteur - 1, (*MurRandV)[2]);
+  (*murInterdits)[*nombreMursInterdits + 2].ligne = hauteur - 1;
+  (*murInterdits)[*nombreMursInterdits + 2].col = (*MurRandV)[2];
 
-  // ajout des murs interdits Gauche et Droite
+  printf("Ajout du mur interdit en bas: ligne = %d, col = %d\n", hauteur - 1, (*MurRandV)[3]);
+  (*murInterdits)[*nombreMursInterdits + 3].ligne = hauteur - 1;
+  (*murInterdits)[*nombreMursInterdits + 3].col = (*MurRandV)[3];
+
   (*nombreMursInterdits) += 4;
+
+  // Ajout des murs interdits Gauche et Droite
   *murInterdits = (MurInterdit *)realloc(
-      *murInterdits, (*nombreMursInterdits) * sizeof(MurInterdit));
+      *murInterdits, (*nombreMursInterdits + 4) * sizeof(MurInterdit));
 
-  (*murInterdits)[*nombreMursInterdits - 4].ligne = (*MurRandH)[0];
-  (*murInterdits)[*nombreMursInterdits - 4].col = 0;
+  if (*murInterdits == NULL) {
+      perror("Erreur de réallocation de mémoire");
+      exit(EXIT_FAILURE);
+  }
 
-  (*murInterdits)[*nombreMursInterdits - 3].ligne = (*MurRandH)[1];
-  (*murInterdits)[*nombreMursInterdits - 3].col = 0;
+  // Murs interdits à gauche
+  printf("Ajout du mur interdit à gauche: ligne = %d, col = 0\n", (*MurRandH)[0]);
+  (*murInterdits)[*nombreMursInterdits].ligne = (*MurRandH)[0];
+  (*murInterdits)[*nombreMursInterdits].col = 0;
 
-  (*murInterdits)[*nombreMursInterdits - 2].ligne = (*MurRandH)[2];
-  (*murInterdits)[*nombreMursInterdits - 2].col = largeur - 1;
+  printf("Ajout du mur interdit à gauche: ligne = %d, col = 0\n", (*MurRandH)[1]);
+  (*murInterdits)[*nombreMursInterdits + 1].ligne = (*MurRandH)[1];
+  (*murInterdits)[*nombreMursInterdits + 1].col = 0;
 
-  (*murInterdits)[*nombreMursInterdits - 1].ligne = (*MurRandH)[3];
-  (*murInterdits)[*nombreMursInterdits - 1].col = largeur - 1;
+  // Murs interdits à droite
+  printf("Ajout du mur interdit à droite: ligne = %d, col = %d\n", (*MurRandH)[2], largeur - 1);
+  (*murInterdits)[*nombreMursInterdits + 2].ligne = (*MurRandH)[2];
+  (*murInterdits)[*nombreMursInterdits + 2].col = largeur - 1;
+
+  printf("Ajout du mur interdit à droite: ligne = %d, col = %d\n", (*MurRandH)[3], largeur - 1);
+  (*murInterdits)[*nombreMursInterdits + 3].ligne = (*MurRandH)[3];
+  (*murInterdits)[*nombreMursInterdits + 3].col = largeur - 1;
+
+  (*nombreMursInterdits) += 4;
 }
-
 
 
 
