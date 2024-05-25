@@ -24,7 +24,7 @@ typedef struct {
   char signe;
 } Cible;
 
-int NombreJoueurs(int nb_joueur);
+void NombreJoueurs(int *nb_joueur);
 void choisirRobotCible(char **grille, int hauteur, int largeur, Robot *robot,
                        Cible *cible);
 void chronometrer(int duree_chrono);
