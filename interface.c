@@ -120,8 +120,7 @@ void choix_player(int **nmbMouv, int nb_Joueur, char **grille, Robot *robot,
   }
 }
 
-int choix_direction() {
-    int direction = 0;
+int choix_direction(int direction) {
     int result;
 
     do {
@@ -145,78 +144,76 @@ int choix_direction() {
 
 void deplacement(Robot *robot, Cible *cible, int direction,
                  MurInterdit *mursInterdits, int nombreMursInterdits,
-                 char **grille) {
-  int exligne = robot->ligne;
-  int excol = robot->col;
-  switch (direction) {
-  case 1: // Nord
-    while (robot->ligne != mursInterdits[robot->ligne].ligne &&
-           robot->col != mursInterdits[robot->col].col) {
-      for (int i = 0; i < nombreMursInterdits; i++) {
-        if (robot->ligne == mursInterdits[robot->ligne].ligne &&
-            robot->col == mursInterdits[robot->col].col) {
-          break;
-        } else {
-          robot->ligne--;
+                 char **grille, int hauteur, int largeur) {
+    printf("coucou\n");
+    int exligne = robot->ligne;
+    int excol = robot->col;
+    int obstacle = 0;
+
+    switch (direction) {
+    case 1: // Nord
+        while (robot->ligne > 0) {
+            robot->ligne--;
+            obstacle = 0;
+            for (int i = 0; i < nombreMursInterdits; i++) {
+                if (robot->ligne == mursInterdits[i].ligne && robot->col == mursInterdits[i].col) {
+                    obstacle = 1;
+                    robot->ligne++; // Revenir à la position précédente
+                    break;
+                }
+            }
+            if (obstacle) break;
         }
-      }
-    }
-    grille[robot->ligne][robot->col] = robot->signe;
-    grille[exligne][excol] = ' ';
-    break;
-  case 2: // Est
-    while (robot->ligne != mursInterdits[robot->ligne].ligne &&
-           robot->col != mursInterdits[robot->col].col) {
-      for (int i = 0; i < nombreMursInterdits; i++) {
-        if (robot->ligne == mursInterdits[robot->ligne].ligne &&
-            robot->col == mursInterdits[robot->col].col) {
-          break;
-        } else {
-          robot->col++;
+        break;
+    case 2: // Est
+        while (robot->col < largeur - 1) {
+            robot->col++;
+            obstacle = 0;
+            for (int i = 0; i < nombreMursInterdits; i++) {
+                if (robot->ligne == mursInterdits[i].ligne && robot->col == mursInterdits[i].col) {
+                    obstacle = 1;
+                    robot->col--; // Revenir à la position précédente
+                    break;
+                }
+            }
+            if (obstacle) break;
         }
-      }
-    }
-    grille[robot->ligne][robot->col] = robot->signe;
-    grille[exligne][excol] = ' ';
-    break;
-  case 3: // Sud
-    while (robot->ligne != mursInterdits[robot->ligne].ligne &&
-           robot->col != mursInterdits[robot->col].col) {
-      for (int i = 0; i < nombreMursInterdits; i++) {
-        if (robot->ligne == mursInterdits[robot->ligne].ligne &&
-            robot->col == mursInterdits[robot->col].col) {
-          break;
-        } else {
-          robot->ligne++;
+        break;
+    case 3: // Sud
+        while (robot->ligne < hauteur - 1) {
+            robot->ligne++;
+            obstacle = 0;
+            for (int i = 0; i < nombreMursInterdits; i++) {
+                if (robot->ligne == mursInterdits[i].ligne && robot->col == mursInterdits[i].col) {
+                    obstacle = 1;
+                    robot->ligne--; // Revenir à la position précédente
+                    break;
+                }
+            }
+            if (obstacle) break;
         }
-      }
-    }
-    grille[robot->ligne][robot->col] = robot->signe;
-    grille[exligne][excol] = ' ';
-    break;
-  case 4: // Ouest
-    while (robot->ligne != mursInterdits[robot->ligne].ligne &&
-           robot->col != mursInterdits[robot->col].col) {
-      for (int i = 0; i < nombreMursInterdits; i++) {
-        if (robot->ligne == mursInterdits[robot->ligne].ligne &&
-            robot->col == mursInterdits[robot->col].col) {
-          break;
-        } else {
-          robot->col--;
+        break;
+    case 4: // Ouest
+        while (robot->col > 0) {
+            robot->col--;
+            obstacle = 0;
+            for (int i = 0; i < nombreMursInterdits; i++) {
+                if (robot->ligne == mursInterdits[i].ligne && robot->col == mursInterdits[i].col) {
+                    obstacle = 1;
+                    robot->col++; // Revenir à la position précédente
+                    break;
+                }
+            }
+            if (obstacle) break;
         }
-      }
+        break;
+    default:
+        printf("Erreur de déplacement\n");
+        return;
     }
-    grille[robot->ligne][robot->col] = robot->signe;
-    grille[exligne][excol] = ' ';
-    break;
-  default:
-    printf("Erreur de déplacement\n");
-    break;
-  }
+
+    // Mettre à jour la grille
+    grille[exligne][excol] = ' '; // Vider l'ancienne position
+    grille[robot->ligne][robot->col] = robot->signe; // Mettre le robot à la nouvelle position
 }
-   
-}
-
-
-
 
