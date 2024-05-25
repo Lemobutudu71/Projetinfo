@@ -219,8 +219,5 @@ void deplacement(Robot *robot, Cible *cible, int direction,
   grille[exligne][excol] = ' '; // Vider l'ancienne position
   grille[robot->ligne][robot->col] = robot->signe; // Mettre le robot à la nouvelle position
 }
-    // Mettre à jour la grille
-    grille[exligne][excol] = ' '; // Vider l'ancienne position
-    grille[robot->ligne][robot->col] = robot->signe; // Mettre le robot à la nouvelle position
-}
+   
 
