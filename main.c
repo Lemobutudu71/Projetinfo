@@ -60,18 +60,20 @@ int main() {
     printf("Error: One or more pointers are NULL.\n");
   }
 
-  printf("Coordonnées des murs interdits :\n");
-  for (int i = 0; i < nombreMursInterdits; i++) {
-    printf("Mur %d: Ligne %d, Col %d\n", i + 1, murInterdits[i].ligne,
-           murInterdits[i].col);
-  }
+ // printf("Coordonnées des murs interdits :\n");
+ // for (int i = 0; i < nombreMursInterdits; i++) {
+ //   printf("Mur %d: Ligne %d, Col %d\n", i + 1, murInterdits[i].ligne,
+ //          murInterdits[i].col);}
+  
+  afficherGrille(grille, hauteur, largeur, &MurRandH, &MurRandV, MurH_Cibles,
+     MurV_Cibles);
   // début du jeu Z'ESSTTT PARTIIII !!!
   int nb_joueur = 1;
   int niveau_difficulte = 2;
   int *nmbMouv = NULL;
   int duree_chrono = 0;
   int player = 0;
-  nb_joueur = NombreJoueurs(nb_joueur);
+  NombreJoueurs(&nb_joueur);
   Robot robot;
   Cible cible;
   printf("Début du jeu\n");
@@ -79,21 +81,21 @@ int main() {
     printf("Manche %d\n", i + 1);
     choisirRobotCible(grille, hauteur, largeur, &robot, &cible);
     duree_chrono = choixdifficulte(niveau_difficulte);
-    afficherGrille(grille, hauteur, largeur, &MurRandV, &MurRandH, MurH_Cibles,
+    afficherGrille(grille, hauteur, largeur, &MurRandH, &MurRandV, MurH_Cibles,
                    MurV_Cibles);
-    //chronometrer(duree_chrono);
+    chronometrer(duree_chrono);
     choix_player(&nmbMouv, nb_joueur, grille, &robot, &cible, &player);
     printf("Le joueur %d va faire %d mouvements\n", player + 1,
            nmbMouv[player]);
-     printf("ok");
-      int direction = 0;
-      printf("direction ok");
-      direction = choix_direction(direction);
+    for(int i=0; i<nmbMouv[player]; i++){
+      int direction;
+      direction = choix_direction();
       printf("direction ok");
       deplacement(&robot, &cible, direction, murInterdits, nombreMursInterdits,
                   grille, hauteur, largeur);
-      afficherGrille(grille, hauteur, largeur, &MurRandV, &MurRandH,
+      afficherGrille(grille, hauteur, largeur, &MurRandH, &MurRandV,
                      MurH_Cibles, MurV_Cibles);
+    }
   }
   for (int i = 0; i < hauteur; i++) {
     free(grille[i]);
