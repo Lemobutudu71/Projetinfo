@@ -48,7 +48,7 @@ int choixdifficulte(int niveau_difficulte) {
   return duree_chrono;
 }
 
-void ChoisirRobotCible(char **grille, int hauteur, int largeur, Robot *robot,
+void choisirRobotCible(char **grille, int hauteur, int largeur, Robot *robot,
                        Cible *cible) {
   int robotTrouve = 0;
   int cibleTrouvee = 0;
@@ -79,9 +79,9 @@ void ChoisirRobotCible(char **grille, int hauteur, int largeur, Robot *robot,
   printf("Cible sélectionnée : %c\n", cible->signe);
 }
 
-void chronometrer(int duree_chrono) {
-  printf("Temps de réflexion : %d secondes\n", duree_chrono);
-  for (int i = duree_chrono; i > 0; i--) {
+void chronometrer(int secondes) {
+  printf("Temps de réflexion : %d secondes\n", secondes);
+  for (int i = secondes; i > 0; i--) {
     printf("%d\n", i);
     sleep(1);
     printf("\033[F\033[J");
@@ -91,17 +91,18 @@ void chronometrer(int duree_chrono) {
   clrscr();
   printf("Temps écoulé \n");
 }
-int MIN(int My_array[], int len) {
-  int num = My_array[0];
-  for (int i = 1; i < len; i++) {
-    if (My_array[i] < num) {
-      num = My_array[i];
+
+int MIN(int tab[], int taille) {
+  int num = tab[0];
+  for (int i = 1; i < taille; i++) {
+    if (tab[i] < num) {
+      num = tab[i];
     }
   }
   return num;
 }
 
-void choix_joueur(int **nmbMouv, int nb_Joueur, char **grille, Robot *robot,
+void choix_player(int **nmbMouv, int nb_Joueur, char **grille, Robot *robot,
                   Cible *cible, int *player) {
   *nmbMouv = malloc(nb_Joueur * sizeof(int *));
   for (int i = 0; i < nb_Joueur; i++) {
@@ -141,27 +142,43 @@ int choix_direction(int direction) {
   return direction;
 }
 
-void deplacement(Robot *robot, Cible *cible, int direction,
-                 MurInterdit *mursInterdits, int nombreMursInterdits,
+void deplacement(Robot *robot, Cible *cible, int direction, int *MurRandH,
+                 int *MurRandV, MurCible *murHCible, MurCible *murVCible,
                  char **grille, int hauteur, int largeur) {
-  
   int exligne = robot->ligne;
   int excol = robot->col;
   int obstacle = 0;
-
+  // Restaurer le caractère initial sur la grille à l'ancienne position du
+    // robot
+  grille[exligne][excol] = robot->tampon;
+  
   switch (direction) {
   case 1: // Nord
     while (robot->ligne > 0) {
+      if (robot->ligne == MurRandH[0] && robot->col == 0 ||
+          robot->ligne == MurRandH[1] && robot->col == 0 ||
+          robot->ligne == MurRandH[2] && robot->col == largeur - 1 ||
+          robot->ligne == MurRandH[3] && robot->col == largeur - 1) {
+        obstacle = 1;
+        break;
+      }
       robot->ligne--;
       obstacle = 0;
-      for (int i = 0; i < nombreMursInterdits; i++) {
-        if (robot->ligne == mursInterdits[i].ligne &&
-            robot->col == mursInterdits[i].col) {
+      for (int i = 0; i < CIBLES; i++) { // déplacement MurH vers le Nord
+        if (robot->ligne == murHCible[i].ligne &&
+            robot->col == murHCible[i].col) {
           obstacle = 1;
           break;
         }
       }
-      if (obstacle)
+      if (robot->ligne == MurRandH[0] && robot->col == 0 ||
+          robot->ligne == MurRandH[1] && robot->col == 0 ||
+          robot->ligne == MurRandH[2] && robot->col == largeur - 1 ||
+          robot->ligne == MurRandH[3] && robot->col == largeur - 1) {
+        obstacle = 1;
+        break;
+      }
+      if (obstacle || grille[robot->ligne][robot->col] != ' ')
         break;
     }
     break;
@@ -169,14 +186,23 @@ void deplacement(Robot *robot, Cible *cible, int direction,
     while (robot->col < largeur - 1) {
       robot->col++;
       obstacle = 0;
-      for (int i = 0; i < nombreMursInterdits; i++) {
-        if (robot->ligne == mursInterdits[i].ligne &&
-            robot->col == mursInterdits[i].col) {
+      for (int i = 0; i < CIBLES; i++) { // déplacement pour murV vers l'Est
+        if (robot->ligne == murVCible[i].ligne &&
+            robot->col == murVCible[i].col) {
           obstacle = 1;
+          robot->col--;
           break;
         }
       }
-      if (obstacle)
+      if (robot->ligne == 0 && robot->col == MurRandV[0] ||
+          robot->ligne == 0 && robot->col == MurRandV[1] ||
+          robot->ligne == hauteur - 1 && robot->col == MurRandV[2] ||
+          robot->ligne == hauteur - 1 && robot->col == MurRandV[3]) {
+        obstacle = 1;
+        robot->col--;
+        break;
+      }
+      if (obstacle || grille[robot->ligne][robot->col] != ' ')
         break;
     }
     break;
@@ -184,29 +210,52 @@ void deplacement(Robot *robot, Cible *cible, int direction,
     while (robot->ligne < hauteur - 1) {
       robot->ligne++;
       obstacle = 0;
-      for (int i = 0; i < nombreMursInterdits; i++) {
-        if (robot->ligne == mursInterdits[i].ligne &&
-            robot->col == mursInterdits[i].col) {
+      for (int i = 0; i < CIBLES; i++) { // déplacement MurH vers le Sud
+        if (robot->ligne == murHCible[i].ligne &&
+            robot->col == murHCible[i].col) {
           obstacle = 1;
+          robot->ligne--;
           break;
         }
       }
-      if (obstacle)
+      if (robot->ligne == MurRandH[0] && robot->col == 0 ||
+          robot->ligne == MurRandH[1] && robot->col == 0 ||
+          robot->ligne == MurRandH[2] && robot->col == largeur - 1 ||
+          robot->ligne == MurRandH[3] && robot->col == largeur - 1) {
+        obstacle = 1;
+        robot->ligne--;
+        break;
+      }
+      if (obstacle || grille[robot->ligne][robot->col] != ' ')
         break;
     }
     break;
   case 4: // Ouest
     while (robot->col > 0) {
+      if (robot->ligne == 0 && robot->col == MurRandV[0] ||
+          robot->ligne == 0 && robot->col == MurRandV[1] ||
+          robot->ligne == hauteur - 1 && robot->col == MurRandV[2] ||
+          robot->ligne == hauteur - 1 && robot->col == MurRandV[3]) {
+        obstacle = 1;
+        break;
+      }
       robot->col--;
       obstacle = 0;
-      for (int i = 0; i < nombreMursInterdits; i++) {
-        if (robot->ligne == mursInterdits[i].ligne &&
-            robot->col == mursInterdits[i].col) {
+      for (int i = 0; i < CIBLES; i++) { // déplacement pour murV vers l'Ouest
+        if (robot->ligne == murVCible[i].ligne &&
+            robot->col == murVCible[i].col) {
           obstacle = 1;
           break;
         }
       }
-      if (obstacle)
+      if (robot->ligne == 0 && robot->col == MurRandV[0] ||
+          robot->ligne == 0 && robot->col == MurRandV[1] ||
+          robot->ligne == hauteur - 1 && robot->col == MurRandV[2] ||
+          robot->ligne == hauteur - 1 && robot->col == MurRandV[3]) {
+        obstacle = 1;
+        break;
+      }
+      if (obstacle || grille[robot->ligne][robot->col] != ' ')
         break;
     }
     break;
@@ -214,78 +263,72 @@ void deplacement(Robot *robot, Cible *cible, int direction,
     printf("Erreur de déplacement\n");
     return;
   }
+  // Sauvegarder le nouveau caractère initial de la position où le robot arrive
+  robot->tampon = grille[robot->ligne][robot->col];
 
-  // Mettre à jour la grille
-  grille[exligne][excol] = ' '; // Vider l'ancienne position
-  grille[robot->ligne][robot->col] = robot->signe; // Mettre le robot à la nouvelle position
+  // Placer le signe du robot sur la nouvelle position
+  grille[robot->ligne][robot->col] = robot->signe;
 }
-   
-
 
 void Points(int *pointsJoueurs, int nb_joueurs, int joueurActuel, int nb_deplacements, int nb_deplacements_effectues, int robotAtteintCible) {
 
-  for (int i = 0; i < nb_joueurs; i++) {
-    pointsJoueurs[i] = 0;
-  }
-
-  if (robotAtteintCible) {
-    if (nb_deplacements_effectues == nb_deplacements) {
-      pointsJoueurs[joueurActuel] += 2;
-    } else if (nb_deplacements_effectues < nb_deplacements) {
-      pointsJoueurs[joueurActuel] -= 1;
+    if (robotAtteintCible) { 
+        if (nb_deplacements_effectues == nb_deplacements) {//si le joueur a atteint la cible avec le nombre de mouvements prévus
+            pointsJoueurs[joueurActuel] += 2;
+        } 
+        else if (nb_deplacements_effectues < nb_deplacements) {//si le joueur a atteint la cible avec moins de mouvements que prévus
+            pointsJoueurs[joueurActuel] -= 1;
+        }
+    } 
+    else {
+        for (int i = 0; i < nb_joueurs; i++) {//si le joueur n'atteint pas la cible avec le nombre de mouvements prévus
+            if (i != joueurActuel) {
+                pointsJoueurs[i] += 1;
+            }
+        }
     }
-  }  else {
-    for (int i = 0; i < nb_joueurs; i++) {
-      if (i != joueurActuel) {
-        pointsJoueurs[i] += 1;
-      }
-    }
-  }
-  }
+}
 
-  // Fonction pour gérer le tour du joueur et les mouvements
-  void JoueurTour(char **grille, int hauteur, int largeur, Robot *robot, Cible *cible, MurInterdit *mursInterdits, int nombreMursInterdits, int *nmbMouv, int joueurActuel, int *pointsJoueurs, int **MurRandH,
-int **MurRandV, int MurH_Cibles[CIBLES][2],
-int MurV_Cibles[CIBLES][2]) {
+void JoueurTour(char **grille, int hauteur, int largeur, Robot *robot, Cible *cible, int *MurRandH, int *MurRandV, MurCible *murHCible, MurCible *murVCible, int *nmbMouv, int joueurActuel, int *pointsJoueurs)
+{
+
   int direction;
   int deplacementsEffectues = 0;
   int robotAtteintCible = 0;
-
-  while (deplacementsEffectues < nmbMouv[joueurActuel]) {
-    direction = choix_direction(direction);
-    deplacement(robot, cible, direction, mursInterdits, nombreMursInterdits, grille, hauteur, largeur);
-    deplacementsEffectues++;
+  while (deplacementsEffectues < nmbMouv[joueurActuel]) {//tant que le joueur n'a pas atteint le nombre de mouvements prévus
+    direction = choix_direction(direction);//demande la direction
+      deplacement(robot, cible, direction, MurRandH, MurRandV, murHCible, murVCible, grille,hauteur, largeur);//déplace le robot 
+      deplacementsEffectues++;//incrémente le nombre de déplacements effectués
 
     if (robot->ligne == cible->ligne && robot->col == cible->col) {
-      robotAtteintCible = 1;
+      robotAtteintCible = 1;//si le robot a atteint la cible
       break;
     }
-    afficherGrille(grille, hauteur, largeur, MurRandH, MurRandV, MurH_Cibles, MurV_Cibles);
+       afficherGrille(grille, hauteur, largeur, MurRandH, MurRandV, murHCible, murVCible);
   }
 
-  Points(pointsJoueurs, 4, joueurActuel, nmbMouv[joueurActuel], deplacementsEffectues, robotAtteintCible);
+  Points(pointsJoueurs, 4, joueurActuel, nmbMouv[joueurActuel], deplacementsEffectues, robotAtteintCible);//actualise le nombre de points
   }
-
 
 void AfficherGagnant(int *pointsJoueurs, int nb_joueurs) {
-  int maxPoints = pointsJoueurs[0];
-  int gagnant = 0;
-  int egalite= 0;
+    int maxPoints = pointsJoueurs[0];
+    int gagnant = 0;
+    int egalite = 0;
 
-  for (int i = 1; i < nb_joueurs; i++) {
-    if (pointsJoueurs[i] > maxPoints) {
-      maxPoints = pointsJoueurs[i];
-      gagnant = i;
-      egalite = 0;
-    } 
-    else if (pointsJoueurs[i] == maxPoints) {
-      egalite = 1;
+    for (int i = 1; i < nb_joueurs; i++) {
+        if (pointsJoueurs[i] > maxPoints) {
+            maxPoints = pointsJoueurs[i];
+            gagnant = i;
+            egalite = 0;
+        } else if (pointsJoueurs[i] == maxPoints) {
+            egalite = 1;
+        }
     }
-  }
 
-  if (egalite) {
-    printf("Il y a une égalité entre plusieurs joueurs !\n");
-  } else {
-    printf("Le gagnant est le joueur %d avec %d points !\n", gagnant + 1, maxPoints);
-  }
+    if (egalite) {
+        printf("Il y a une égalité entre plusieurs joueurs !\n");
+    } else {
+        printf("Le gagnant est le joueur %d avec %d points !\n", gagnant + 1, maxPoints);
+    }
 }
+ 
